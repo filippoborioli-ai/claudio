@@ -1,0 +1,15 @@
+{
+  "name": "claudio",
+  "version": "3.0.0",
+  "description": "Software di analisi dati per l'ingegneria di processo: statistica, SPC, capacita, MSA, DoE e metodologie Lean Six Sigma. Funziona interamente nel browser.",
+  "main": "src/core/stats.js",
+  "scripts": {
+    "test": "node --test test/core.test.js test/ui.test.js",
+    "start": "python -m http.server 8777"
+  },
+  "keywords": ["statistica", "spc", "six-sigma", "lean", "doe", "capability", "msa", "quality", "process-engineering"],
+  "license": "MIT",
+  "devDependencies": {
+    "jsdom": "^24.0.0"
+  }
+}

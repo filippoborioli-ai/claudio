@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CLAUDIO - Analisi dati, SPC, DoE e Lean Six Sigma</title>
+<meta name="description" content="Software di analisi dati per l ingegneria di processo: statistica, carte di controllo, capacita, MSA, progettazione degli esperimenti, metodologie Lean Six Sigma e cruscotti grafici. Funziona interamente nel browser, senza inviare dati in rete.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232a78d6'/%3E%3Cpath d='M22 70 L40 42 L56 58 L78 26' stroke='white' stroke-width='9' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body>
+<div id="app">
+  <div style="grid-area:main;padding:40px;text-align:center;color:#888">Caricamento del motore statistico...</div>
+</div>
+
+<noscript>
+  <p style="padding:20px">Questa applicazione richiede JavaScript attivo. I dati restano sul tuo computer: nessuna informazione viene inviata in rete.</p>
+</noscript>
+
+<!-- motore statistico -->
+<script src="src/core/numeric.js"></script>
+<script src="src/core/dist.js"></script>
+<script src="src/core/matrix.js"></script>
+<script src="src/core/stats.js"></script>
+<script src="src/core/tests.js"></script>
+<script src="src/core/regression.js"></script>
+<script src="src/core/anova.js"></script>
+<script src="src/core/control.js"></script>
+<script src="src/core/capability.js"></script>
+<script src="src/core/msa.js"></script>
+<script src="src/core/doe.js"></script>
+<script src="src/core/designs.js"></script>
+<script src="src/core/power.js"></script>
+<script src="src/core/multivariate.js"></script>
+<script src="src/core/timeseries.js"></script>
+<script src="src/core/sixsigma.js"></script>
+
+<!-- grafica -->
+<script src="src/viz/chart.js"></script>
+<script src="src/viz/plots.js"></script>
+
+<!-- dati -->
+<script src="src/data/dataset.js"></script>
+<script src="src/data/io.js"></script>
+<script src="src/data/samples.js"></script>
+
+<!-- interfaccia -->
+<script src="src/ui/components.js"></script>
+<script src="src/ui/app.js"></script>
+<script src="src/ui/views/data-view.js"></script>
+<script src="src/ui/views/explore-view.js"></script>
+<script src="src/ui/views/dashboard-view.js"></script>
+<script src="src/ui/views/analyze-view.js"></script>
+<script src="src/ui/views/model-view.js"></script>
+<script src="src/ui/views/spc-view.js"></script>
+<script src="src/ui/views/capability-view.js"></script>
+<script src="src/ui/views/msa-view.js"></script>
+<script src="src/ui/views/doe-design-view.js"></script>
+<script src="src/ui/views/doe-analyze-view.js"></script>
+<script src="src/ui/views/lean-view.js"></script>
+<script src="src/ui/views/doe-guide-view.js"></script>
+<script src="src/ui/views/sixsigma-view.js"></script>
+<script src="src/ui/views/help-view.js"></script>
+
+<script>
+  (function () {
+    function fail(msg) {
+      document.getElementById('app').innerHTML =
+        '<div style="grid-area:main;padding:40px;max-width:760px">' +
+        '<h2>Non riesco ad avviare l applicazione</h2><p>' + msg + '</p>' +
+        '<p style="color:#888">Apri la console del browser (F12) per i dettagli.</p></div>';
+    }
+    if (!window.C3 || !window.C3.app) {
+      fail('Alcuni file non sono stati caricati. Se hai aperto il file con doppio clic, ' +
+        'alcuni browser bloccano il caricamento: usa il file <b>avvia.cmd</b> incluso nella cartella, ' +
+        'oppure pubblica la cartella su un server (anche GitHub Pages).');
+      return;
+    }
+    try {
+      window.C3.app.boot();
+    } catch (e) {
+      console.error(e);
+      fail('Errore in avvio: ' + e.message);
+    }
+  })();
+</script>
+</body>
+</html>
