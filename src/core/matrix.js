@@ -187,7 +187,7 @@
     var i, j, k, s, alpha, v, vnorm, dot;
     var Rdiag = new Array(p).fill(0);
     var vs = [];
-    var kmax = Math.min(n, p); // con piu parametri che osservazioni si ferma alle righe disponibili
+    var kmax = Math.min(n, p); // con più parametri che osservazioni si ferma alle righe disponibili
     for (k = 0; k < kmax; k++) {
       // vettore di Householder per colonna k
       s = 0;

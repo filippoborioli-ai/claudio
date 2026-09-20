@@ -1,7 +1,7 @@
 /* CLAUDIO v3 - core/msa.js
  * Analisi del sistema di misura (MSA):
- * Gage R&R incrociato (metodo ANOVA con pooling dell'interazione e metodo Xbar-R),
- * Gage R&R annidato (prove distruttive), studio di bias e linearita,
+ * Gage R&R incrociato (metodo ANOVA con pooling dell’interazione e metodo Xbar-R),
+ * Gage R&R annidato (prove distruttive), studio di bias e linearità,
  * analisi di concordanza per attributi (kappa di Cohen e Fleiss, Kendall).
  */
 ;(function (root, name, deps, factory) {
@@ -24,7 +24,7 @@ function (num, dist, st, ctrl, av, reg) {
    */
   function gageRRCrossed(spec) {
     var vc = av.varianceComponents(spec.values, spec.parts, spec.operators, { nested: false });
-    if (!vc.balanced) return { balanced: false, error: 'Il disegno non e bilanciato: ogni operatore deve misurare ogni pezzo lo stesso numero di volte.' };
+    if (!vc.balanced) return { balanced: false, error: 'Il disegno non è bilanciato: ogni operatore deve misurare ogni pezzo lo stesso numero di volte.' };
     var a = vc.a, b = vc.b, nrep = vc.nrep;
     var tab = vc.table;
     var msA = tab[0].ms, msB = tab[1].ms;
@@ -37,7 +37,7 @@ function (num, dist, st, ctrl, av, reg) {
     var varPart, varOper, varInter, varRepeat, table2;
 
     if (nrep < 2) {
-      // nessun replicato: l interazione non e stimabile e fa da termine di errore
+      // nessun replicato: l’interazione non è stimabile e fa da termine di errore
       varRepeat = msAB != null ? msAB : msE;
       varInter = 0;
       varPart = Math.max(0, (msA - varRepeat) / b);
@@ -63,7 +63,7 @@ function (num, dist, st, ctrl, av, reg) {
       table2 = [
         { source: 'Pezzo', df: dfA, ss: tab[0].ss, ms: msA, F: msA / msPool, p: 1 - dist.F.cdf(msA / msPool, dfA, dfPool) },
         { source: 'Operatore', df: dfB, ss: tab[1].ss, ms: msB, F: msB / msPool, p: 1 - dist.F.cdf(msB / msPool, dfB, dfPool) },
-        { source: 'Ripetibilita', df: dfPool, ss: ssPool, ms: msPool, F: null, p: null },
+        { source: 'Ripetibilità', df: dfPool, ss: ssPool, ms: msPool, F: null, p: null },
         { source: 'Totale', df: dfA + dfB + dfPool, ss: tab[0].ss + tab[1].ss + ssPool, ms: null, F: null, p: null }
       ];
     } else {
@@ -75,7 +75,7 @@ function (num, dist, st, ctrl, av, reg) {
         { source: 'Pezzo', df: dfA, ss: tab[0].ss, ms: msA, F: msA / msAB, p: 1 - dist.F.cdf(msA / msAB, dfA, dfAB) },
         { source: 'Operatore', df: dfB, ss: tab[1].ss, ms: msB, F: msB / msAB, p: 1 - dist.F.cdf(msB / msAB, dfB, dfAB) },
         { source: 'Pezzo*Operatore', df: dfAB, ss: abRow.ss, ms: msAB, F: msAB / msE, p: 1 - dist.F.cdf(msAB / msE, dfAB, dfE) },
-        { source: 'Ripetibilita', df: dfE, ss: tab[tab.length - 1].ss, ms: msE, F: null, p: null },
+        { source: 'Ripetibilità', df: dfE, ss: tab[tab.length - 1].ss, ms: msE, F: null, p: null },
         { source: 'Totale', df: dfA + dfB + dfAB + dfE, ss: tab[0].ss + tab[1].ss + abRow.ss + tab[tab.length - 1].ss, ms: null, F: null, p: null }
       ];
     }
@@ -84,7 +84,7 @@ function (num, dist, st, ctrl, av, reg) {
     var varGage = varRepeat + varRepro;
     var varTotal = varGage + varPart;
     if (spec.processSd) {
-      // usa la variabilita storica di processo come riferimento
+      // usa la variabilità storica di processo come riferimento
       varTotal = Math.max(varGage, Math.pow(spec.processSd, 2));
       varPart = Math.max(0, varTotal - varGage);
     }
@@ -101,8 +101,8 @@ function (num, dist, st, ctrl, av, reg) {
     }
     var rows = [
       row('Gage R&R totale', varGage),
-      row('  Ripetibilita (EV)', varRepeat),
-      row('  Riproducibilita (AV)', varRepro)
+      row('  Ripetibilità (EV)', varRepeat),
+      row('  Riproducibilità (AV)', varRepro)
     ];
     if (varInter > 0 || !pooled) {
       rows.push(row('    Operatore', varOper));
@@ -138,7 +138,7 @@ function (num, dist, st, ctrl, av, reg) {
   function rrVerdict(pctRR, ndc) {
     var out = [];
     if (pctRR < 10) out.push('Sistema di misura accettabile (%Study Var < 10%).');
-    else if (pctRR < 30) out.push('Sistema di misura marginale (10-30%): accettabile solo valutando costi e criticita.');
+    else if (pctRR < 30) out.push('Sistema di misura marginale (10-30%): accettabile solo valutando costi e criticità.');
     else out.push('Sistema di misura non accettabile (%Study Var > 30%): va migliorato prima di usare i dati.');
     if (ndc >= 5) out.push('Categorie distinte ' + ndc + ' (>= 5): risoluzione adeguata a distinguere i pezzi.');
     else out.push('Categorie distinte ' + ndc + ' (< 5): risoluzione insufficiente per il controllo di processo.');
@@ -237,14 +237,14 @@ function (num, dist, st, ctrl, av, reg) {
       balanced: true, method: 'ANOVA annidato (nested)',
       anova: tab.map(function (r, i) {
         return {
-          source: ['Operatore', 'Pezzo(Operatore)', 'Ripetibilita'][i] || r.source,
+          source: ['Operatore', 'Pezzo(Operatore)', 'Ripetibilità'][i] || r.source,
           df: r.df, ss: r.ss, ms: r.ms, F: r.F, p: r.p
         };
       }),
       components: [
         row('Gage R&R totale', varGage),
-        row('  Ripetibilita', varRepeat),
-        row('  Riproducibilita', varOper),
+        row('  Ripetibilità', varRepeat),
+        row('  Riproducibilità', varOper),
         row('Pezzo-a-pezzo', varPart),
         row('Variazione totale', varTotal)
       ],
@@ -255,7 +255,7 @@ function (num, dist, st, ctrl, av, reg) {
   }
 
   /**
-   * Studio di bias e linearita.
+   * Studio di bias e linearità.
    * spec: { reference: [], measured: [], tolerance, processVar }
    */
   function biasLinearity(spec) {
@@ -301,7 +301,7 @@ function (num, dist, st, ctrl, av, reg) {
       points: ref.map(function (r, k) { return { reference: r, measured: mea[k], bias: bias[k] }; }),
       fit: fit,
       verdict: (pv > 0.05 ? 'Bias non significativo. ' : 'Bias significativo: il sistema misura sistematicamente ' + (meanBias > 0 ? 'in eccesso. ' : 'in difetto. ')) +
-        (fit.pValues[1] > 0.05 ? 'Linearita accettabile.' : 'Linearita significativa: il bias cambia con la grandezza misurata.')
+        (fit.pValues[1] > 0.05 ? 'Linearità accettabile.' : 'Linearità significativa: il bias cambia con la grandezza misurata.')
     };
   }
 
@@ -399,7 +399,7 @@ function (num, dist, st, ctrl, av, reg) {
       verdict: (function () {
         var p = betweenTot ? 100 * betweenAgree / betweenTot : 0;
         if (p >= 90) return 'Concordanza elevata (>= 90%): sistema di valutazione affidabile.';
-        if (p >= 80) return 'Concordanza marginale (80-90%): servono criteri piu chiari o formazione.';
+        if (p >= 80) return 'Concordanza marginale (80-90%): servono criteri più chiari o formazione.';
         return 'Concordanza insufficiente (< 80%): rivedere definizioni operative e addestramento.';
       })()
     };
@@ -448,7 +448,7 @@ function (num, dist, st, ctrl, av, reg) {
     return { kappa: kappa, se: se, z: z, p: 1 - dist.normal.cdf(z), po: po, pe: pe, n: n };
   }
 
-  /** Kappa di Fleiss (piu valutatori sugli stessi item). */
+  /** Kappa di Fleiss (più valutatori sugli stessi item). */
   function fleissKappa(rows, items, cats) {
     var N = 0, k = cats.length;
     var counts = [];
@@ -500,7 +500,7 @@ function (num, dist, st, ctrl, av, reg) {
       pctTolerance: tolerance ? 100 * increment / tolerance : null,
       pctProcess: processSd ? 100 * increment / (6 * processSd) : null,
       ok: tolerance ? increment <= tolerance / 10 : null,
-      note: 'La risoluzione dello strumento deve essere <= 10% della tolleranza (regola del 10) o <= 10% della variabilita di processo.'
+      note: 'La risoluzione dello strumento deve essere <= 10% della tolleranza (regola del 10) o <= 10% della variabilità di processo.'
     };
   }
 

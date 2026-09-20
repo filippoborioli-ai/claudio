@@ -227,7 +227,7 @@ test('import/export: CSV e Excel fanno andata e ritorno', { skip: !JSDOM ? 'jsdo
   const back = C3.io.datasetFromText(csv, { name: 'roundtrip' });
   assert.strictEqual(back.nrows, ds.nrows, 'righe CSV');
   assert.deepStrictEqual(back.names, ds.names, 'colonne CSV');
-  const a = ds.numeric('Velocita'), b = back.numeric('Velocita');
+  const a = ds.numeric('Velocità'), b = back.numeric('Velocità');
   for (let i = 0; i < a.length; i++) {
     assert.ok(Math.abs(a[i] - b[i]) < 1e-9, 'valore CSV riga ' + i);
   }
@@ -247,7 +247,7 @@ test('import/export: CSV e Excel fanno andata e ritorno', { skip: !JSDOM ? 'jsdo
   assert.strictEqual(matrix.length, ds.nrows + 1, 'righe xlsx (intestazione inclusa)');
   assert.deepStrictEqual(matrix[0].map(String), ds.names, 'intestazioni xlsx');
   const dsx = C3.data.fromMatrix(matrix, true, 'xlsx');
-  assert.ok(Math.abs(dsx.numeric('Velocita')[0] - a[0]) < 1e-9, 'valore xlsx');
+  assert.ok(Math.abs(dsx.numeric('Velocità')[0] - a[0]) < 1e-9, 'valore xlsx');
 });
 
 test('salvataggio e ripristino del progetto', { skip: !JSDOM ? 'jsdom non installato' : false }, () => {

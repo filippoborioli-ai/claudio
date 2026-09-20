@@ -6,7 +6,7 @@
  *  - analisi: effetti, Pareto, normal/half-normal plot, Lenth (disegni non replicati),
  *    ANOVA, curvatura, lack-of-fit
  *  - superficie di risposta: modello quadratico, punto stazionario, analisi canonica,
- *    griglie per contour/superficie, ottimizzazione multi-risposta (desiderabilita)
+ *    griglie per contour/superficie, ottimizzazione multi-risposta (desiderabilità)
  *  - potenza per disegni a 2 livelli, rapporti S/N di Taguchi
  */
 ;(function (root, name, deps, factory) {
@@ -25,7 +25,7 @@ function (num, dist, st, mat, reg) {
   var LETTERS = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'.split(''); // la I e riservata
 
   /* ==================== ALIAS E RISOLUZIONE ==================== */
-  /** Converte 'ABC' in insieme di indici. */
+  /** Converte la parola ABC nell'insieme degli indici delle lettere. */
   function wordToSet(w) {
     return w.split('').map(function (c) { return LETTERS.indexOf(c); }).sort(function (a, b) { return a - b; });
   }
@@ -130,7 +130,7 @@ function (num, dist, st, mat, reg) {
   /**
    * Risoluzione massima ottenibile per 2^(k-p) (disegni a minima aberrazione noti
    * in letteratura). Serve a evitare ricerche combinatorie quando la tabella
-   * standard e gia ottima.
+   * standard e già ottima.
    */
   var KNOWN_RESOLUTION = {
     '3-1': 3,
@@ -144,7 +144,7 @@ function (num, dist, st, mat, reg) {
 
   /**
    * Cerca i generatori a minima aberrazione per 2^(k-p):
-   * massimizza la risoluzione, poi minimizza il numero di parole piu corte.
+   * massimizza la risoluzione, poi minimizza il numero di parole più corte.
    * Esaustivo quando lo spazio e piccolo, altrimenti ricerca casuale con seme fisso.
    */
   var genCache = {};
@@ -249,7 +249,7 @@ function (num, dist, st, mat, reg) {
 
   /**
    * Generatori da usare: la tabella standard viene accettata se raggiunge la
-   * risoluzione ottima nota; solo altrimenti si avvia la ricerca (piu lenta).
+   * risoluzione ottima nota; solo altrimenti si avvia la ricerca (più lenta).
    */
   function generatorsFor(k, p) {
     var key = k + '-' + p;
@@ -392,10 +392,10 @@ function (num, dist, st, mat, reg) {
     return half === 0 ? 0 : (real - mid) / half;
   }
 
-  /** Assegna i blocchi confondendoli con le interazioni di ordine piu alto. */
+  /** Assegna i blocchi confondendoli con le interazioni di ordine più alto. */
   function assignBlocks(runs, factors, nBlocks, base) {
     var nb = Math.round(Math.log2(nBlocks));
-    // usa le interazioni piu lunghe disponibili come generatori di blocco
+    // usa le interazioni più lunghe disponibili come generatori di blocco
     var blockGens = [];
     if (base >= 3 && nb >= 1) blockGens.push(factors.slice(0, base).map(function (f) { return f.name; }));
     if (nb >= 2 && base >= 4) blockGens.push([factors[0].name, factors[1].name]);
@@ -417,8 +417,8 @@ function (num, dist, st, mat, reg) {
     else if (resolution >= 5) notes.push('Risoluzione V o superiore: effetti principali e interazioni a 2 fattori stimabili separatamente.');
     else if (resolution === 4) notes.push('Risoluzione IV: effetti principali liberi da interazioni a 2 fattori, ma le interazioni a 2 fattori sono confuse fra loro.');
     else notes.push('Risoluzione III: gli effetti principali sono confusi con interazioni a 2 fattori. Usare solo per screening, prevedere un fold-over.');
-    if (reps === 1 && cp === 0) notes.push('Nessun replicato ne punto centrale: la varianza di errore non e stimabile, si usera il metodo di Lenth.');
-    if (cp > 0) notes.push(cp + ' punti centrali per replica: consentono di stimare l errore puro e testare la curvatura.');
+    if (reps === 1 && cp === 0) notes.push('Nessun replicato ne punto centrale: la varianza di errore non è stimabile, si usera il metodo di Lenth.');
+    if (cp > 0) notes.push(cp + ' punti centrali per replica: consentono di stimare l’errore puro e testare la curvatura.');
     return notes;
   }
 
@@ -480,7 +480,7 @@ function (num, dist, st, mat, reg) {
         factors.forEach(function (f) { o[f.name] = r[f.name]; });
         return o;
       }),
-      notes: ['Disegno a livelli misti: usare ANOVA fattoriale per l analisi.']
+      notes: ['Disegno a livelli misti: usare ANOVA fattoriale per l’analisi.']
     };
   }
 
@@ -543,7 +543,7 @@ function (num, dist, st, mat, reg) {
       notes: [
         'Disegno di risoluzione III non regolare: gli effetti principali sono parzialmente confusi con tutte le interazioni a 2 fattori.',
         'Adatto a screening di molti fattori con poche prove (' + runs + ' prove per fino a ' + ncol + ' fattori).',
-        (ncol - kFac) + ' colonne libere utilizzabili come stima dell errore.'
+        (ncol - kFac) + ' colonne libere utilizzabili come stima dell’errore.'
       ]
     };
   }
@@ -632,7 +632,7 @@ function (num, dist, st, mat, reg) {
         'Alpha = ' + num.round(alpha, 4) + (spec.alphaType === 'face' ? ' (face-centered: i livelli restano entro il cubo)' :
           (spec.alphaType === 'orthogonal' ? ' (blocchi ortogonali)' : ' (rotatabile: varianza di previsione costante a pari distanza dal centro)')),
         'Il modello stimabile e quadratico completo: ' + (1 + k + k + k * (k - 1) / 2) + ' coefficienti.',
-        'I punti centrali servono a stimare l errore puro e a testare la curvatura.'
+        'I punti centrali servono a stimare l’errore puro e a testare la curvatura.'
       ]
     };
   }
@@ -747,7 +747,7 @@ function (num, dist, st, mat, reg) {
     [2, 3, 1, 3, 2, 3, 1, 2], [2, 3, 2, 1, 3, 1, 2, 3], [2, 3, 3, 2, 1, 2, 3, 1]
   ];
 
-  /** Verifica l ortogonalita (bilanciamento) di tutte le coppie di colonne. */
+  /** Verifica l’ortogonalità (bilanciamento) di tutte le coppie di colonne. */
   function checkOrthogonal(cols) {
     var n = cols[0].length;
     for (var a = 0; a < cols.length; a++) {
@@ -915,7 +915,7 @@ function (num, dist, st, mat, reg) {
       }
     }
     if (spec.extraTerms) terms = terms.concat(spec.extraTerms);
-    // se i termini superano le prove disponibili si riduce l ordine (modello non stimabile)
+    // se i termini superano le prove disponibili si riduce l’ordine (modello non stimabile)
     var nRuns = st.clean(data[spec.response]).length;
     var droppedTerms = [];
     while (terms.length + 1 > nRuns && terms.length > factors.length) {
@@ -951,7 +951,7 @@ function (num, dist, st, mat, reg) {
     if (spec.blockColumn) cat[spec.blockColumn] = true;
 
     var fit = reg.glm({ data: work, y: spec.response, terms: terms.join(' + '), categorical: cat });
-    // effetti = 2 * coefficiente (unita codificate)
+    // effetti = 2 * coefficiente (unità codificate)
     var effects = [];
     fit.termIndex.forEach(function (ti, k) {
       if (spec.blockColumn && ti.label === spec.blockColumn) return;
@@ -966,7 +966,7 @@ function (num, dist, st, mat, reg) {
         order: ti.term.vars.length
       });
     });
-    // Lenth: sempre calcolato, usato quando l errore non e stimabile in modo affidabile
+    // Lenth: sempre calcolato, usato quando l’errore non è stimabile in modo affidabile
     var lenthAll = lenthMethod(effects.map(function (e) { return e.effect; }), spec.alpha || 0.05);
     var noError = !isFinite(fit.mse) || fit.dfe < 1 || fit.mse < 1e-10 * Math.max(1e-30, fit.sst);
     var lenth = noError ? lenthAll : null;
@@ -1134,7 +1134,7 @@ function (num, dist, st, mat, reg) {
     };
   }
 
-  /** Equazione del modello in unita codificate. */
+  /** Equazione del modello in unità codificate. */
   function buildEquation(fit, response) {
     var parts = [num.round(fit.beta[0], 5).toString()];
     for (var j = 1; j < fit.beta.length; j++) {
@@ -1147,6 +1147,29 @@ function (num, dist, st, mat, reg) {
 
   /* ==================== MODELLO QUADRATICO / RSM ==================== */
   /**
+   * Semiampiezza di codifica: usa lo scostamento non nullo dal centro più ricorrente
+   * (nei CCD e nei Box-Behnken corrisponde ai punti fattoriali, che valgono +-1),
+   * così i valori codificati coincidono con quelli del piano sperimentale.
+   */
+  function factorialHalfRange(vals, mid, fallback) {
+    var counts = {}, best = null;
+    vals.forEach(function (v) {
+      var d = num.round(Math.abs(v - mid), 6);
+      if (d <= 1e-9) return;
+      counts[d] = (counts[d] || 0) + 1;
+    });
+    var keys = Object.keys(counts);
+    if (!keys.length) return fallback;
+    keys.forEach(function (k) {
+      var c = counts[k], d = Number(k);
+      // a parita di frequenza si preferisce lo scostamento minore (livello fattoriale)
+      if (!best || c > best.count || (c === best.count && d < best.d)) best = { d: d, count: c };
+    });
+    // se gli scostamenti sono tutti diversi (dati osservativi) resta la semiampiezza classica
+    return best.count > 1 ? best.d : fallback;
+  }
+
+  /**
    * Adatta il modello quadratico completo (o ridotto) per superficie di risposta.
    * spec: { data, response, factors, coded (default true), terms opzionali }
    */
@@ -1156,9 +1179,14 @@ function (num, dist, st, mat, reg) {
     factors.forEach(function (f) {
       var vals = data[f].map(Number).filter(isFinite);
       var lo = st.min(vals), hi = st.max(vals);
-      // per CCD i punti assiali stanno oltre +-1: usa i livelli fattoriali se presenti
       var mid = (lo + hi) / 2, half = (hi - lo) / 2;
-      if (spec.codedInput) { mid = 0; half = 1; }
+      if (spec.codedInput) {
+        mid = 0; half = 1;
+      } else {
+        // nei CCD i punti assiali stanno oltre +-1: la codifica si ancora ai punti
+        // fattoriali (lo scostamento dal centro più frequente), non al valore estremo
+        half = factorialHalfRange(vals, mid, half);
+      }
       ranges[f] = { low: lo, high: hi, mid: mid, half: half };
       coded[f] = data[f].map(function (v) { return half === 0 ? 0 : (Number(v) - mid) / half; });
     });
@@ -1310,7 +1338,7 @@ function (num, dist, st, mat, reg) {
 
   /* ==================== DESIDERABILITA / OTTIMIZZAZIONE ==================== */
   /**
-   * Desiderabilita di Derringer-Suich.
+   * Desiderabilità di Derringer-Suich.
    * goal: 'max' | 'min' | 'target'
    */
   function desirability(y, goal, lower, target, upper, weight) {
@@ -1415,9 +1443,9 @@ function (num, dist, st, mat, reg) {
     var runs = Math.pow(2, spec.k - (spec.p || 0)) * (spec.replicates || 1) + (spec.centerPoints || 0);
     var nTerms = spec.terms || (1 + spec.k + spec.k * (spec.k - 1) / 2);
     var df = runs - nTerms;
-    if (df < 1) return { runs: runs, df: df, power: NaN, note: 'Gradi di liberta insufficienti per stimare l errore.' };
+    if (df < 1) return { runs: runs, df: df, power: NaN, note: 'Gradi di liberta insufficienti per stimare l’errore.' };
     var alpha = spec.alpha || 0.05;
-    // effetto = differenza fra le medie ai due livelli; sd dell effetto = 2*sigma/sqrt(N)
+    // effetto = differenza fra le medie ai due livelli; sd dell’effetto = 2*sigma/sqrt(N)
     var seEffect = 2 * spec.sigma / Math.sqrt(runs);
     var ncp = Math.abs(spec.effect) / seEffect;
     var tc = dist.t.inv(1 - alpha / 2, df);

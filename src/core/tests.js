@@ -261,7 +261,7 @@
     };
   }
 
-  /** Bartlett (richiede normalita). */
+  /** Bartlett (richiede normalità). */
   function bartlett(groups) {
     var k = groups.length, N = 0, sp = 0, sumLog = 0, sumInv = 0, i;
     var ns = [], vs = [];
@@ -302,7 +302,7 @@
     var sig = Math.sqrt((n1 * n2 / 12) * ((N + 1) - tieSum / (N * (N - 1))));
     var U = U1;
     var z = (U - mu) / sig;
-    var zc = z - Math.sign(z) * 0.5 / sig; // correzione di continuita
+    var zc = z - Math.sign(z) * 0.5 / sig; // correzione di continuità
     var p;
     if (alt === 'less') p = dist.normal.cdf(zc);
     else if (alt === 'greater') p = 1 - dist.normal.cdf(zc);

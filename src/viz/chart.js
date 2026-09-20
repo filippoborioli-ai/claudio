@@ -561,9 +561,13 @@
     var sy = function (v) { return ys(v); };
 
     if (type === 'line' || type === 'step' || type === 'area') {
+      // le aree usano y0/y1 (banda), le linee usano y: si accettano entrambe le forme
       var pts = (series.points || []).filter(function (pt) {
-        return pt.y != null && isFinite(pt.y) && pt.x != null;
+        if (pt == null || pt.x == null || !isFinite(pt.x)) return false;
+        if (pt.y != null && isFinite(pt.y)) return true;
+        return type === 'area' && pt.y0 != null && pt.y1 != null && isFinite(pt.y0) && isFinite(pt.y1);
       });
+      if (!pts.length) return;
       if (type === 'area') {
         var dA = '';
         pts.forEach(function (pt, i) {
@@ -598,8 +602,9 @@
           opacity: series.opacity == null ? 1 : series.opacity
         }, g);
       }
-      if (series.marker !== false) {
+      if (series.marker !== false && type !== 'area') {
         pts.forEach(function (pt) {
+          if (pt.y == null || !isFinite(pt.y)) return;
           var col = pt.color || (pt.status ? pal().status[pt.status] : color);
           var r = pt.size || series.markerSize || 4;
           el('circle', {
@@ -615,9 +620,12 @@
           }
         });
       }
-      pts.forEach(function (pt) {
-        hoverables.push({ x: sx(pt.x), y: sy(pt.y), datum: pt, series: series, color: color });
-      });
+      if (series.hover !== false) {
+        pts.forEach(function (pt) {
+          if (pt.y == null || !isFinite(pt.y)) return;
+          hoverables.push({ x: sx(pt.x), y: sy(pt.y), datum: pt, series: series, color: color });
+        });
+      }
       return;
     }
 
@@ -982,7 +990,7 @@
       return;
     }
     if (a.type === 'curve') {
-      // curva parametrica (es. densita normale sovrapposta)
+      // curva parametrica (es. densità normale sovrapposta)
       var d = (a.points || []).map(function (pt, i) {
         return (i ? 'L' : 'M') + xs(pt.x) + ',' + ys(pt.y);
       }).join(' ');
@@ -1005,11 +1013,27 @@
     }, g);
     var focus = el('circle', { r: 6, fill: 'none', stroke: p.ink, 'stroke-width': 2, opacity: 0 }, g);
 
+    /** Converte le coordinate del puntatore in unità del grafico usando la matrice dell SVG. */
+    function toLocal(ev) {
+      var pt;
+      if (svg.createSVGPoint && svg.getScreenCTM && svg.getScreenCTM()) {
+        pt = svg.createSVGPoint();
+        pt.x = ev.clientX;
+        pt.y = ev.clientY;
+        var loc = pt.matrixTransform(svg.getScreenCTM().inverse());
+        return { x: loc.x - m.left, y: loc.y - m.top };
+      }
+      // ripiego se la matrice non è disponibile (ambienti senza layout)
+      var rect = svg.getBoundingClientRect();
+      var sx = (iw + m.left + m.right) / (rect.width || 1);
+      var sy = (ih + m.top + m.bottom) / (rect.height || 1);
+      return { x: (ev.clientX - rect.left) * sx - m.left, y: (ev.clientY - rect.top) * sy - m.top };
+    }
+
     function onMove(ev) {
       var rect = svg.getBoundingClientRect();
-      var scaleX = iw / (rect.width - m.left - m.right || 1);
-      var mx = (ev.clientX - rect.left - m.left * (rect.width / (iw + m.left + m.right))) * (iw + m.left + m.right) / rect.width;
-      var my = (ev.clientY - rect.top) * (ih + m.top + m.bottom) / rect.height - m.top;
+      var local = toLocal(ev);
+      var mx = local.x, my = local.y;
       var best = null, bd = Infinity;
       hoverables.forEach(function (h) {
         var dx = h.x - mx, dy = h.y - my;
@@ -1033,9 +1057,20 @@
       tip.innerHTML = tooltipHTML(best, spec, xs, ys);
       tip.style.display = 'block';
       var tw = tip.offsetWidth, th = tip.offsetHeight;
-      var px = (best.x + m.left) * rect.width / (iw + m.left + m.right);
-      var py = (best.y + m.top) * rect.height / (ih + m.top + m.bottom);
-      tip.style.left = Math.max(2, Math.min(rect.width - tw - 2, px + 12)) + 'px';
+      // posizione del punto sullo schermo, ricavata dalla stessa matrice
+      var px, py;
+      if (svg.createSVGPoint && svg.getScreenCTM && svg.getScreenCTM()) {
+        var p2 = svg.createSVGPoint();
+        p2.x = best.x + m.left;
+        p2.y = best.y + m.top;
+        var scr = p2.matrixTransform(svg.getScreenCTM());
+        px = scr.x - rect.left;
+        py = scr.y - rect.top;
+      } else {
+        px = (best.x + m.left) * rect.width / (iw + m.left + m.right);
+        py = (best.y + m.top) * rect.height / (ih + m.top + m.bottom);
+      }
+      tip.style.left = Math.max(2, Math.min(Math.max(2, rect.width - tw - 2), px + 12)) + 'px';
       tip.style.top = Math.max(2, py - th - 10) + 'px';
     }
     svg.addEventListener('mousemove', onMove);

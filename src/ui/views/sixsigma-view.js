@@ -12,7 +12,7 @@
     label: 'Metodologia Six Sigma',
     icon: 'σ',
     group: 'Metodologie',
-    desc: 'Il percorso DMAIC con gli strumenti di ogni fase, il selettore dello strumento giusto, FMEA, Pareto, rendimento a catena e costo della non qualita.',
+    desc: 'Il percorso DMAIC con gli strumenti di ogni fase, il selettore dello strumento giusto, FMEA, Pareto, rendimento a catena e costo della non qualità.',
     render: function (el) {
       var tabs = ui.tabs([
         { id: 'dmaic', label: 'Percorso DMAIC', render: dmaic },
@@ -40,9 +40,9 @@
       ]);
     }))));
 
-    el.appendChild(ui.panel('Y = f(X): l idea di fondo', null,
+    el.appendChild(ui.panel('Y = f(X): l’idea di fondo', null,
       h('div', { class: 'doc' }, [
-        h('p', { html: 'Il risultato che interessa al cliente (<b>Y</b>) e l effetto di variabili di processo (<b>X</b>). ' +
+        h('p', { html: 'Il risultato che interessa al cliente (<b>Y</b>) e l’effetto di variabili di processo (<b>X</b>). ' +
           'Non si controlla Y ispezionandolo: si controllano le X che lo generano. Tutto il DMAIC serve a passare da ' +
           '"conosciamo Y" a "controlliamo le X critiche".' }),
         h('table', { class: 'data' }, [
@@ -50,10 +50,10 @@
           h('tbody', null, [
             ['Quanto e grave il problema in numeri?', 'Define', 'Statistiche descrittive, Pareto, COPQ'],
             ['Posso fidarmi dei dati?', 'Measure', 'MSA / Gage R&R'],
-            ['Qual e il livello attuale?', 'Measure', 'Carte di controllo, capacita, livello sigma'],
+            ['Qual e il livello attuale?', 'Measure', 'Carte di controllo, capacità, livello sigma'],
             ['Quali X influenzano Y?', 'Analyze', 'Test di ipotesi, ANOVA, regressione, multi-vari'],
-            ['Quanto e a che livello impostare le X?', 'Improve', 'DoE, superficie di risposta, desiderabilita'],
-            ['Il guadagno si mantiene?', 'Control', 'Carte di controllo, capacita finale, control plan']
+            ['Quanto e a che livello impostare le X?', 'Improve', 'DoE, superficie di risposta, desiderabilità'],
+            ['Il guadagno si mantiene?', 'Control', 'Carte di controllo, capacità finale, control plan']
           ].map(function (r) {
             return h('tr', null, r.map(function (c) { return h('td', null, c); }));
           }))
@@ -62,7 +62,7 @@
 
     el.appendChild(ui.panel('Ruoli e struttura tipica', null,
       h('div', { class: 'cards' }, [
-        ['Champion / Sponsor', 'Sceglie i progetti, rimuove gli ostacoli, approva le risorse e valida il beneficio economico.'],
+        ['Champion / Sponsor', 'Sceglie i progetti, rimuove gli ostacoli, approva le risorse è valida il beneficio economico.'],
         ['Master Black Belt', 'Forma e assiste le cinture, garantisce il rigore metodologico, gestisce il portafoglio progetti.'],
         ['Black Belt', 'Guida progetti complessi a tempo pieno, padroneggia statistica e DoE, coordina il team.'],
         ['Green Belt', 'Conduce progetti nel proprio reparto a tempo parziale, usa gli strumenti di base.'],
@@ -81,10 +81,10 @@
         id: 'question', type: 'select', label: 'Che domanda ti stai facendo?', options: [
           { value: 'describe', label: 'Come sono distribuiti i miei dati?' },
           { value: 'compare2', label: 'Due gruppi sono diversi?' },
-          { value: 'compareK', label: 'Piu di due gruppi sono diversi?' },
+          { value: 'compareK', label: 'Più di due gruppi sono diversi?' },
           { value: 'relation', label: 'Due variabili sono legate fra loro?' },
           { value: 'predict', label: 'Posso prevedere Y dalle X?' },
-          { value: 'stable', label: 'Il processo e stabile nel tempo?' },
+          { value: 'stable', label: 'Il processo è stabile nel tempo?' },
           { value: 'capable', label: 'Il processo rispetta la specifica?' },
           { value: 'measure', label: 'Posso fidarmi del sistema di misura?' },
           { value: 'cause', label: 'Quali fattori causano il problema?' },
@@ -123,19 +123,19 @@
       switch (v.question) {
         case 'describe':
           rec('Statistiche descrittive e riassunto grafico', 'Media, mediana, dispersione, forma, valori anomali in un colpo solo.', 'descrittive');
-          rec('Test di normalita (Anderson-Darling)', 'Decide se puoi usare i metodi parametrici e gli indici di capacita classici.', 'descrittive');
+          rec('Test di normalità (Anderson-Darling)', 'Decide se puoi usare i metodi parametrici e gli indici di capacità classici.', 'descrittive');
           rec('Identificazione della distribuzione', 'Se i dati non sono normali, trova la distribuzione che li descrive.', 'descrittive');
           break;
         case 'compare2':
           if (v.dataType === 'disc') rec('Test su 2 proporzioni (o Fisher esatto)', 'Confronta due percentuali di difettosi.', 'test');
-          else if (v.paired) rec(v.normal ? 't appaiato' : 'Wilcoxon signed-rank', 'Le misure sullo stesso pezzo sono correlate: il test appaiato elimina la variabilita fra pezzi.', 'test');
+          else if (v.paired) rec(v.normal ? 't appaiato' : 'Wilcoxon signed-rank', 'Le misure sullo stesso pezzo sono correlate: il test appaiato elimina la variabilità fra pezzi.', 'test');
           else rec(v.normal ? 't a 2 campioni (Welch)' : 'Mann-Whitney', 'Confronta due medie (o mediane) indipendenti.', 'test');
           rec('Test su 2 varianze e Levene', 'Le differenze di dispersione contano quanto quelle di media.', 'test');
           rec('Boxplot e valori individuali', 'Guarda sempre i dati prima di fidarti del p-value.', 'descrittive');
           break;
         case 'compareK':
-          if (v.dataType === 'disc') rec('Chi-quadro di associazione', 'Confronta proporzioni fra piu gruppi.', 'test');
-          else rec(v.normal ? 'ANOVA a una via + Tukey' : 'Kruskal-Wallis o mediana di Mood', 'Confronta piu gruppi controllando il rischio complessivo di falso allarme.', 'anova');
+          if (v.dataType === 'disc') rec('Chi-quadro di associazione', 'Confronta proporzioni fra più gruppi.', 'test');
+          else rec(v.normal ? 'ANOVA a una via + Tukey' : 'Kruskal-Wallis o mediana di Mood', 'Confronta più gruppi controllando il rischio complessivo di falso allarme.', 'anova');
           rec('Test di uguaglianza delle varianze', 'Se le varianze differiscono usa Welch e Games-Howell.', 'anova');
           break;
         case 'relation':
@@ -150,36 +150,36 @@
           break;
         case 'stable':
           rec(v.dataType === 'disc' ? 'Carte p, np, c, u' : 'Carte I-MR o Xbar-R', 'Distingue le cause comuni da quelle speciali.', 'spc');
-          rec('EWMA o CUSUM', 'Piu sensibili a piccoli scostamenti persistenti della media.', 'spc');
+          rec('EWMA o CUSUM', 'Più sensibili a piccoli scostamenti persistenti della media.', 'spc');
           rec('Test di Nelson', 'Otto schemi che segnalano comportamenti non casuali.', 'spc');
           break;
         case 'capable':
-          rec(v.dataType === 'disc' ? 'Capacita per attributi' : (v.normal ? 'Capacita normale (Cp, Cpk, Pp, Ppk)' : 'Capacita non normale'), 'Confronta la voce del processo con la voce del cliente.', 'capacita');
-          rec('Sixpack di capacita', 'Stabilita, normalita e capacita in un unico quadro.', 'sixpack');
-          rec('Carte di controllo', 'La capacita ha senso solo su un processo stabile: verifica prima la stabilita.', 'spc');
+          rec(v.dataType === 'disc' ? 'Capacità per attributi' : (v.normal ? 'Capacità normale (Cp, Cpk, Pp, Ppk)' : 'Capacità non normale'), 'Confronta la voce del processo con la voce del cliente.', 'capacità');
+          rec('Sixpack di capacità', 'Stabilità, normalità è capacità in un unico quadro.', 'sixpack');
+          rec('Carte di controllo', 'La capacità ha senso solo su un processo stabile: verifica prima la stabilità.', 'spc');
           break;
         case 'measure':
-          rec('Gage R&R incrociato', 'Quantifica ripetibilita e riproducibilita rispetto alla variabilita dei pezzi.', 'msa');
-          rec('Bias e linearita', 'Verifica se lo strumento e centrato su tutto il campo di misura.', 'msa');
+          rec('Gage R&R incrociato', 'Quantifica ripetibilità e riproducibilità rispetto alla variabilità dei pezzi.', 'msa');
+          rec('Bias e linearità', 'Verifica se lo strumento e centrato su tutto il campo di misura.', 'msa');
           rec('Concordanza per attributi', 'Per giudizi visivi o passa/non passa: kappa di Cohen e Fleiss.', 'msa');
           break;
         case 'cause':
-          rec('Analisi multi-vari e boxplot per gruppo', 'Mostra dove nasce la variabilita: fra pezzi, fra tempi, entro pezzo.', 'descrittive');
+          rec('Analisi multi-vari e boxplot per gruppo', 'Mostra dove nasce la variabilità: fra pezzi, fra tempi, entro pezzo.', 'descrittive');
           rec('ANOVA e componenti della varianza', 'Quantifica il contributo di ogni fonte.', 'anova');
           rec('DoE di screening', 'Le cause si dimostrano cambiando i fattori, non osservandoli.', 'doe-piano');
           break;
         case 'optimize':
           rec('DoE fattoriale', 'Stima effetti e interazioni con poche prove.', 'doe-piano');
           rec('Superficie di risposta (CCD, Box-Behnken)', 'Trova il punto ottimale quando la risposta e curva.', 'doe-piano');
-          rec('Ottimizzazione con desiderabilita', 'Compromesso fra piu risposte in conflitto.', 'doe-analisi');
+          rec('Ottimizzazione con desiderabilità', 'Compromesso fra più risposte in conflitto.', 'doe-analisi');
           break;
         case 'counts':
           rec('Carte p, np, c, u e varianti di Laney', 'Controllo statistico per dati di conteggio.', 'spc');
-          rec('Capacita per attributi', 'Da percentuale difettosa a livello sigma e DPMO.', 'capacita');
+          rec('Capacità per attributi', 'Da percentuale difettosa a livello sigma e DPMO.', 'capacità');
           rec('Test su proporzioni e chi-quadro', 'Confronti fra percentuali.', 'test');
           break;
         case 'sample':
-          rec('Potenza e numerosita campionaria', 'Quante prove servono per rilevare una differenza di interesse.', 'potenza');
+          rec('Potenza e numerosità campionaria', 'Quante prove servono per rilevare una differenza di interesse.', 'potenza');
           rec('Piano di campionamento in accettazione', 'n e c a partire da AQL e RQL, con curva OC.', 'potenza');
           break;
       }
@@ -194,8 +194,8 @@
             }, 'Apri lo strumento') : null
           ].filter(Boolean));
         }))));
-      out.appendChild(ui.verdict('Prima di qualunque test: <b>guarda i dati</b>. Un grafico ben fatto risolve piu ' +
-        'domande di dieci p-value, e protegge dagli errori grossolani (dati duplicati, unita di misura sbagliate, ' +
+      out.appendChild(ui.verdict('Prima di qualunque test: <b>guarda i dati</b>. Un grafico ben fatto risolve più ' +
+        'domande di dieci p-value, e protegge dagli errori grossolani (dati duplicati, unità di misura sbagliate, ' +
         'valori impossibili).', 'good'));
     }
     run();
@@ -277,7 +277,7 @@
       tableHost.appendChild(ui.kv([
         ['RPN totale', res.totalRpn, 0],
         ['Modi ad alto rischio', res.highRisk, 0],
-        ['Priorita', res.rows.slice(0, 3).map(function (r) { return r.failureMode + ' (' + r.rpn + ')'; }).join(' ; ')]
+        ['Priorità', res.rows.slice(0, 3).map(function (r) { return r.failureMode + ' (' + r.rpn + ')'; }).join(' ; ')]
       ]));
       var box = h('div');
       tableHost.appendChild(box);
@@ -285,20 +285,20 @@
     }
 
     el.appendChild(ui.panel('FMEA di processo', {
-      sub: 'G = gravita, P = probabilita, R = rilevabilita (scala 1-10); RPN = G x P x R'
+      sub: 'G = gravità, P = probabilità, R = rilevabilità (scala 1-10); RPN = G x P x R'
     }, [tableHost, out]));
     render();
 
     el.appendChild(ui.panel('Come si compila', null,
       h('div', { class: 'doc' }, [
-        h('p', { html: '<b>Gravita (G)</b>: quanto e grave l effetto per il cliente. 10 = pericolo per la sicurezza o non conformita a norme. ' +
+        h('p', { html: '<b>Gravità (G)</b>: quanto e grave l’effetto per il cliente. 10 = pericolo per la sicurezza o non conformita a norme. ' +
           'Si riduce solo cambiando il progetto, non il controllo.' }),
-        h('p', { html: '<b>Probabilita (P)</b>: quanto spesso si presenta la causa. Si riduce agendo sul processo (poka-yoke, manutenzione, parametri).' }),
-        h('p', { html: '<b>Rilevabilita (R)</b>: 1 = il controllo attuale intercetta sempre il problema, 10 = non lo intercetta mai. ' +
-          'Attenzione: la scala e invertita rispetto all intuizione.' }),
-        h('p', { html: 'L <b>RPN</b> serve a ordinare le priorita, non e una misura assoluta: due combinazioni con lo stesso RPN ' +
+        h('p', { html: '<b>Probabilità (P)</b>: quanto spesso si presenta la causa. Si riduce agendo sul processo (poka-yoke, manutenzione, parametri).' }),
+        h('p', { html: '<b>Rilevabilità (R)</b>: 1 = il controllo attuale intercetta sempre il problema, 10 = non lo intercetta mai. ' +
+          'Attenzione: la scala e invertita rispetto all’intuizione.' }),
+        h('p', { html: 'L <b>RPN</b> serve a ordinare le priorità, non è una misura assoluta: due combinazioni con lo stesso RPN ' +
           'possono avere urgenza molto diversa. Per questo lo standard AIAG-VDA ha introdotto l <b>Action Priority</b> (alta, media, bassa), ' +
-          'che pesa prima la gravita, poi la probabilita, poi la rilevabilita.' }),
+          'che pesa prima la gravità, poi la probabilità, poi la rilevabilità.' }),
         h('p', { html: 'Regola pratica: qualunque modo con <b>G >= 9</b> va affrontato a prescindere dall RPN.' })
       ])));
   }
@@ -351,7 +351,7 @@
       var f = ui.form([
         { id: 'scrap', type: 'number', label: 'Scarti (valore annuo)', value: 120000 },
         { id: 'rework', type: 'number', label: 'Rilavorazioni', value: 85000 },
-        { id: 'downtime', type: 'number', label: 'Fermi per qualita', value: 40000 },
+        { id: 'downtime', type: 'number', label: 'Fermi per qualità', value: 40000 },
         { id: 'warranty', type: 'number', label: 'Garanzie e resi', value: 95000 },
         { id: 'complaints', type: 'number', label: 'Gestione reclami', value: 30000 },
         { id: 'inspection', type: 'number', label: 'Ispezioni e collaudi', value: 150000 },
@@ -374,13 +374,13 @@
         var box = h('div');
         out.appendChild(box);
         C3.chart.renderPie(box, {
-          title: 'Composizione del costo della non qualita', donut: true,
+          title: 'Composizione del costo della non qualità', donut: true,
           centerLabel: num.fmt(r.total / 1000, 0) + 'k',
           data: r.rows.map(function (x) { return { label: x.category, value: x.value }; })
         });
         out.appendChild(ui.verdict(r.note, r.failureShare > 60 ? 'warn' : 'good'));
       }
-      grid.appendChild(ui.panel('Costo della non qualita (COPQ)', null, [f.el, out]));
+      grid.appendChild(ui.panel('Costo della non qualità (COPQ)', null, [f.el, out]));
       calc();
     })();
   }
@@ -391,7 +391,7 @@
     var f = ui.form([
       {
         id: 'rows', type: 'textarea', rows: 6,
-        label: 'Fasi: nome, unita lavorate, unita difettose',
+        label: 'Fasi: nome, unità lavorate, unità difettose',
         value: 'Taglio, 1000, 12\nSaldatura, 988, 31\nVerniciatura, 957, 18\nAssemblaggio, 939, 9\nCollaudo, 930, 14'
       }
     ], calc);
@@ -438,7 +438,7 @@
         yLabel: '%', height: 280, rotate: -20
       });
       out.appendChild(ui.verdict('Il RTY smaschera la "fabbrica nascosta": ogni fase sembra buona presa da sola, ' +
-        'ma la probabilita che un pezzo attraversi tutte le fasi senza rilavorazioni e molto piu bassa. ' +
+        'ma la probabilità che un pezzo attraversi tutte le fasi senza rilavorazioni e molto più bassa. ' +
         'Con ' + steps.length + ' fasi al 98% la resa complessiva scende a ' +
         num.fmt(100 * Math.pow(0.98, steps.length), 1) + '%.', 'good'));
     }
@@ -469,8 +469,8 @@
       { id: 'y', label: 'Metrica primaria (Y)', value: '% pezzi scartati per turno', type: 'text' },
       { id: 'secondary', label: 'Metriche secondarie e di controbilanciamento', value: 'OEE, tempo di cambio, costo unitario', type: 'text' },
       { id: 'benefit', label: 'Beneficio atteso', value: '115.000 euro/anno di minori scarti', type: 'text' },
-      { id: 'team', label: 'Team e ruoli', value: 'Sponsor: direzione operations. Green Belt: ing. di processo. Team: capoturno, manutenzione, qualita.', type: 'textarea' },
-      { id: 'risks', label: 'Rischi e vincoli', value: 'Fermi linea non programmabili; disponibilita materiale per le prove.', type: 'textarea' }
+      { id: 'team', label: 'Team e ruoli', value: 'Sponsor: direzione operations. Green Belt: ing. di processo. Team: capoturno, manutenzione, qualità.', type: 'textarea' },
+      { id: 'risks', label: 'Rischi e vincoli', value: 'Fermi linea non programmabili; disponibilità materiale per le prove.', type: 'textarea' }
     ];
     var f = ui.form(fields.map(function (x) {
       return { id: x.id, type: x.type, label: x.label, value: x.value, rows: 3 };
@@ -504,7 +504,7 @@
           ]);
         }))));
       out.appendChild(ui.verdict('Un buon charter sta in una pagina e risponde a: <b>qual e il problema in numeri</b>, ' +
-        '<b>quanto vale</b>, <b>chi decide</b>, <b>entro quando</b>. Se il problema non e misurabile, non e ancora un progetto Six Sigma.', 'good'));
+        '<b>quanto vale</b>, <b>chi decide</b>, <b>entro quando</b>. Se il problema non è misurabile, non è ancora un progetto Six Sigma.', 'good'));
     }
     preview();
   }

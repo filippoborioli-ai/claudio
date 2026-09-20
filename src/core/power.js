@@ -21,7 +21,7 @@
     var lc = (df / 2) * Math.log(df / 2) - num.lgamma(df / 2);
     var f = function (s) {
       if (s <= 0) return 0;
-      // densita di s = sqrt(V/df)
+      // densità di s = sqrt(V/df)
       var logd = Math.log(2) + lc + (df - 1) * Math.log(s) - df * s * s / 2;
       var d = Math.exp(logd);
       if (!isFinite(d) || d < 1e-16) return 0;

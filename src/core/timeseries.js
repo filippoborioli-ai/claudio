@@ -298,7 +298,7 @@
     return p;
   }
 
-  /** Confronto automatico di piu metodi di previsione. */
+  /** Confronto automatico di più metodi di previsione. */
   function autoForecast(values, opts) {
     opts = opts || {};
     var horizon = opts.horizon || 6;

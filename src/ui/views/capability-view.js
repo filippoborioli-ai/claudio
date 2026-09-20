@@ -1,5 +1,5 @@
 /* CLAUDIO v3 - ui/views/capability-view.js
- * Analisi di capacita: normale, non normale (distribuzione fittata o
+ * Analisi di capacità: normale, non normale (distribuzione fittata o
  * trasformazione), attributi (binomiale e Poisson), sixpack con carte,
  * conversioni sigma/DPMO.
  */
@@ -10,14 +10,14 @@
 
   C3.app.registerView({
     id: 'capacita',
-    label: 'Capacita di processo',
+    label: 'Capacità di processo',
     icon: '△',
     group: 'Six Sigma',
-    desc: 'Cp, Cpk, Pp, Ppk, Cpm, Z.bench, PPM attesi e osservati, livello sigma, intervalli di confidenza, capacita non normale e per attributi.',
+    desc: 'Cp, Cpk, Pp, Ppk, Cpm, Z.bench, PPM attesi e osservati, livello sigma, intervalli di confidenza, capacità non normale e per attributi.',
     render: function (el) {
       var ds = C3.app.ds();
       if (!ds || !ds.nrows) {
-        el.appendChild(ui.empty('Nessun dato', 'Carica un dataset per analizzare la capacita.'));
+        el.appendChild(ui.empty('Nessun dato', 'Carica un dataset per analizzare la capacità.'));
         return;
       }
       var numCols = ds.numericColumns(), catCols = ds.categoricalColumns();
@@ -36,12 +36,13 @@
             { value: 'sixpack', label: 'Sixpack' },
             { value: 'nonnormal', label: 'Non normale' },
             { value: 'binomial', label: 'Attributi: % difettosi' },
-            { value: 'poisson', label: 'Attributi: difetti per unita' },
+            { value: 'poisson', label: 'Attributi: difetti per unità' },
             { value: 'convert', label: 'Conversioni sigma' }
           ]
         },
         {
           id: 'value', type: 'select', label: 'Variabile', options: numCols,
+          value: C3.app.guessMeasure(ds) || numCols[0],
           when: function (v) { return ['normal', 'sixpack', 'nonnormal'].indexOf(v.mode) >= 0; }
         },
         {
@@ -88,12 +89,12 @@
           when: function (v) { return v.mode === 'poisson'; }
         },
         {
-          id: 'units', type: 'select', label: 'Colonna unita ispezionate',
+          id: 'units', type: 'select', label: 'Colonna unità ispezionate',
           options: [{ value: '', label: '(1 per riga)' }].concat(numCols),
           when: function (v) { return v.mode === 'poisson'; }
         },
         {
-          id: 'opportunities', type: 'number', label: 'Opportunita di difetto per unita', value: 1, min: 1,
+          id: 'opportunities', type: 'number', label: 'Opportunita di difetto per unità', value: 1, min: 1,
           when: function (v) { return v.mode === 'poisson'; }
         },
         {
@@ -135,7 +136,7 @@
       function specCheck(v) {
         if (v.lsl == null && v.usl == null) {
           out.appendChild(ui.verdict('Inserisci almeno un limite di specifica (LSL o USL): senza specifica ' +
-            'non esiste il concetto di capacita, esiste solo la variabilita.', 'warn'));
+            'non esiste il concetto di capacità, esiste solo la variabilità.', 'warn'));
           return false;
         }
         if (v.lsl != null && v.usl != null && v.lsl >= v.usl) {
@@ -169,7 +170,8 @@
         C3.plots.kpiTile(kpiRow, {
           label: 'Ppk (lungo termine)', value: num.fmt(c.overall.cpk, 3),
           sub: 'IC: ' + num.fmt(c.ci.ppk[0], 3) + ' ... ' + num.fmt(c.ci.ppk[1], 3),
-          status: c.overall.cpk >= 1.33 ? 'good' : (c.overall.cpk >= 1 ? 'warn' : 'bad')
+          status: c.overall.cpk >= 1.33 ? 'good' : (c.overall.cpk >= 1 ? 'warn' : 'bad'),
+          statusLabel: cap.verdict(c.overall.cpk).level
         });
         C3.plots.kpiTile(kpiRow, {
           label: 'PPM attesi (lungo termine)', value: num.fmt(c.overall.ppmTotal, 1),
@@ -184,7 +186,7 @@
         out.appendChild(ui.panel('Istogramma con limiti di specifica', null, chartBox));
         C3.plots.capabilityChart(chartBox, c, { name: v.value });
 
-        out.appendChild(ui.panel('Indici di capacita', { sub: 'within = breve termine, overall = lungo termine' }, [
+        out.appendChild(ui.panel('Indici di capacità', { sub: 'within = breve termine, overall = lungo termine' }, [
           ui.table([
             { key: 'label', label: 'Indice' },
             { key: 'within', label: 'Within (potenziale)', digits: 4 },
@@ -193,8 +195,8 @@
           ], [
             { label: 'Cp / Pp', within: c.within.cp, overall: c.overall.cp, note: 'ampiezza della specifica rispetto alla dispersione (ignora il centraggio)' },
             { label: 'Cpk / Ppk', within: c.within.cpk, overall: c.overall.cpk, note: 'indice peggiore fra i due lati: tiene conto del centraggio' },
-            { label: 'CPU / PPU', within: c.within.cpu, overall: c.overall.cpu, note: 'distanza dal limite superiore in unita di 3 sigma' },
-            { label: 'CPL / PPL', within: c.within.cpl, overall: c.overall.cpl, note: 'distanza dal limite inferiore in unita di 3 sigma' },
+            { label: 'CPU / PPU', within: c.within.cpu, overall: c.overall.cpu, note: 'distanza dal limite superiore in unità di 3 sigma' },
+            { label: 'CPL / PPL', within: c.within.cpl, overall: c.overall.cpl, note: 'distanza dal limite inferiore in unità di 3 sigma' },
             { label: 'Cpm', within: c.within.cpm, overall: c.overall.cpm, note: 'penalizza lo scostamento dal target' },
             { label: 'Z.bench', within: c.within.zBench, overall: c.overall.zBench, note: 'numero di sigma equivalente alla frazione fuori specifica' },
             { label: 'PPM totali', within: c.within.ppmTotal, overall: c.overall.ppmTotal, note: 'pezzi fuori specifica per milione' },
@@ -206,10 +208,10 @@
             ['Sigma within (breve termine)', c.sigmaWithin, 6],
             ['Sigma overall (lungo termine)', c.sdOverall, 6],
             ['Rapporto overall/within', num.fmt(c.sdOverall / c.sigmaWithin, 3) +
-              (c.sdOverall / c.sigmaWithin > 1.3 ? ' <b>(instabilita nel tempo)</b>' : '')],
+              (c.sdOverall / c.sigmaWithin > 1.3 ? ' <b>(instabilità nel tempo)</b>' : '')],
             ['Scostamento dal centro della specifica (k)', c.within.k != null ? num.fmt(c.within.k, 2) + '%' : '-'],
             ['IC ' + Math.round(100 * c.conf) + '% per Cp', num.fmt(c.ci.cp[0], 4) + ' ... ' + num.fmt(c.ci.cp[1], 4)],
-            ['Normalita (Anderson-Darling)', 'A2 = ' + num.fmt(c.normality.A2, 4) + ', p = ' + num.fmtP(c.normality.p)],
+            ['Normalità (Anderson-Darling)', 'A2 = ' + num.fmt(c.normality.A2, 4) + ', p = ' + num.fmtP(c.normality.p)],
             ['Difettosi osservati', c.observed.below + ' sotto LSL, ' + c.observed.above + ' sopra USL']
           ]),
           ui.verdict('<b>' + verd.level.toUpperCase() + '</b>: ' + verd.text +
@@ -234,11 +236,11 @@
           need.push(['Centro della specifica', num.fmt((v.lsl + v.usl) / 2, 5) + ' (media attuale ' + num.fmt(c.mean, 5) + ')']);
           need.push(['Cpk ottenibile solo centrando il processo', num.fmt(c.within.cp, 4)]);
         }
-        need.push(['Numerosita per stimare Cpk con precisione 10%', C3.power.nForCpk(c.within.cpk, 0.1, c.conf)]);
+        need.push(['Numerosità per stimare Cpk con precisione 10%', C3.power.nForCpk(c.within.cpk, 0.1, c.conf)]);
         out.appendChild(ui.panel('Leve di miglioramento', null, [
           ui.kv(need),
           ui.verdict('Due strade: <b>centrare</b> (sposta la media, spesso rapido e poco costoso) e ' +
-            '<b>ridurre la variabilita</b> (serve intervenire sulle cause: DoE, manutenzione, controllo dei materiali).', 'good')
+            '<b>ridurre la variabilità</b> (serve intervenire sulle cause: DoE, manutenzione, controllo dei materiali).', 'good')
         ]));
       }
 
@@ -269,7 +271,7 @@
             ['Cp (dati trasformati)', num.fmt(c.overall.cp, 4)],
             ['Cpk (dati trasformati)', num.fmt(c.overall.cpk, 4)],
             ['PPM attesi', num.fmt(c.overall.ppmTotal, 2)],
-            ['Normalita dopo trasformazione', 'p = ' + num.fmtP(c.normality.p)]
+            ['Normalità dopo trasformazione', 'p = ' + num.fmtP(c.normality.p)]
           ];
         } else {
           rows = [
@@ -284,7 +286,7 @@
             ['PPM attesi', num.fmt(c.overall.ppmTotal, 2)]
           ];
         }
-        out.appendChild(ui.panel('Capacita non normale', { sub: c.kind }, [
+        out.appendChild(ui.panel('Capacità non normale', { sub: c.kind }, [
           ui.kv(rows),
           ui.verdict('Con dati non normali gli indici si calcolano sui <b>percentili</b> della distribuzione ' +
             'adattata (0,135% e 99,865%, equivalenti a +/- 3 sigma della normale), oppure si trasformano i dati. ' +
@@ -309,11 +311,11 @@
             title: 'Probability plot - ' + c.dist.label
           });
         } else {
-          C3.plots.probabilityPlot(b2, c.values, { name: 'valore trasformato', title: 'Normalita dopo trasformazione' });
+          C3.plots.probabilityPlot(b2, c.values, { name: 'valore trasformato', title: 'Normalità dopo trasformazione' });
         }
         // confronto tra distribuzioni
         var fits = cap.bestDistribution(xv);
-        out.appendChild(ui.panel('Confronto fra distribuzioni', { sub: 'AD piu bassa = adattamento migliore' },
+        out.appendChild(ui.panel('Confronto fra distribuzioni', { sub: 'AD più bassa = adattamento migliore' },
           ui.table([
             { key: 'label', label: 'Distribuzione' },
             { key: 'ad', label: 'Anderson-Darling', digits: 4 },
@@ -333,7 +335,7 @@
         C3.plots.kpiTile(kpiRow, { label: 'PPM', value: num.fmt(c.ppm, 0) });
         C3.plots.kpiTile(kpiRow, { label: 'Livello sigma', value: num.fmt(c.sigmaLevel, 2), sub: 'con spostamento 1,5' });
         C3.plots.kpiTile(kpiRow, { label: 'Resa', value: num.fmt(c.yield, 3), unit: '%' });
-        out.appendChild(ui.panel('Capacita per attributi (binomiale)', null, [
+        out.appendChild(ui.panel('Capacità per attributi (binomiale)', null, [
           ui.kv([
             ['Difettosi totali', c.totalDefectives, 0],
             ['Pezzi ispezionati', c.totalInspected, 0],
@@ -342,7 +344,7 @@
             ['Punti fuori controllo nella carta p', c.chart.outOfControl, 0]
           ]),
           ui.verdict(c.chart.outOfControl
-            ? 'La carta p mostra punti fuori controllo: il processo non e stabile, la stima della percentuale difettosa non e affidabile come previsione.'
+            ? 'La carta p mostra punti fuori controllo: il processo non è stabile, la stima della percentuale difettosa non è affidabile come previsione.'
             : 'La carta p e in controllo: la percentuale difettosa stimata e una previsione ragionevole.',
             c.chart.outOfControl ? 'warn' : 'good')
         ]));
@@ -366,24 +368,24 @@
         });
         var kpiRow = h('div', { class: 'grid-4 mb' });
         out.appendChild(kpiRow);
-        C3.plots.kpiTile(kpiRow, { label: 'DPU (difetti per unita)', value: num.fmt(c.dpu, 4), sub: 'IC: ' + num.fmt(c.ci[0], 4) + ' ... ' + num.fmt(c.ci[1], 4) });
-        C3.plots.kpiTile(kpiRow, { label: 'DPMO', value: c.dpmo != null ? num.fmt(c.dpmo, 0) : '-', sub: v.opportunities + ' opportunita per unita' });
-        C3.plots.kpiTile(kpiRow, { label: 'Unita senza difetti', value: num.fmt(100 * c.pZeroDefects, 2), unit: '%' });
+        C3.plots.kpiTile(kpiRow, { label: 'DPU (difetti per unità)', value: num.fmt(c.dpu, 4), sub: 'IC: ' + num.fmt(c.ci[0], 4) + ' ... ' + num.fmt(c.ci[1], 4) });
+        C3.plots.kpiTile(kpiRow, { label: 'DPMO', value: c.dpmo != null ? num.fmt(c.dpmo, 0) : '-', sub: v.opportunities + ' opportunita per unità' });
+        C3.plots.kpiTile(kpiRow, { label: 'Unità senza difetti', value: num.fmt(100 * c.pZeroDefects, 2), unit: '%' });
         C3.plots.kpiTile(kpiRow, { label: 'Livello sigma', value: num.fmt(c.sigmaLevel, 2) });
-        out.appendChild(ui.panel('Capacita per attributi (Poisson)', null, [
+        out.appendChild(ui.panel('Capacità per attributi (Poisson)', null, [
           ui.kv([
             ['Difetti totali', c.totalDefects, 0],
-            ['Unita ispezionate', c.totalUnits, 2],
+            ['Unità ispezionate', c.totalUnits, 2],
             ['DPU', c.dpu, 5],
-            ['Probabilita di unita perfetta', num.fmt(100 * c.pZeroDefects, 3) + '%'],
+            ['Probabilità di unità perfetta', num.fmt(100 * c.pZeroDefects, 3) + '%'],
             ['Punti fuori controllo nella carta u', c.chart.outOfControl, 0]
           ]),
-          ui.verdict('Il DPU conta i difetti, non i pezzi difettosi: un pezzo puo avere piu difetti. ' +
+          ui.verdict('Il DPU conta i difetti, non i pezzi difettosi: un pezzo può avere più difetti. ' +
             'La resa in prima passata si stima con exp(-DPU).', 'good')
         ]));
         var box = h('div');
         out.appendChild(ui.panel('Carta u', null, box));
-        C3.plots.controlChart(box, c.chart, { yLabel: 'Difetti per unita' });
+        C3.plots.controlChart(box, c.chart, { yLabel: 'Difetti per unità' });
       }
 
       function conversions(v) {
@@ -444,17 +446,17 @@
   });
 
   /* ==================================================================
-     SIXPACK: registrato come modalita della vista capacita, ma con
+     SIXPACK: registrato come modalita della vista capacità, ma con
      rendering dedicato richiamato da normal() quando mode = sixpack
      ================================================================== */
   var originalRegister = null;
 
   C3.app.registerView({
     id: 'sixpack',
-    label: 'Sixpack di capacita',
+    label: 'Sixpack di capacità',
     icon: '▤',
     group: 'Six Sigma',
-    desc: 'Vista compatta in stile relazione: carte di controllo, ultimi sottogruppi, istogramma, probability plot e indici di capacita in un unico quadro.',
+    desc: 'Vista compatta in stile relazione: carte di controllo, ultimi sottogruppi, istogramma, probability plot e indici di capacità in un unico quadro.',
     render: function (el) {
       var ds = C3.app.ds();
       if (!ds || !ds.nrows) {
@@ -470,7 +472,7 @@
       split.appendChild(right);
       el.appendChild(split);
       var f = ui.form([
-        { id: 'value', type: 'select', label: 'Variabile', options: numCols },
+        { id: 'value', type: 'select', label: 'Variabile', options: numCols, value: C3.app.guessMeasure(ds) || numCols[0] },
         { id: 'size', type: 'number', label: 'Dimensione del sottogruppo', value: meta.subgroupSize || 1, min: 1, max: 25 },
         { id: 'lsl', type: 'number', label: 'LSL', value: meta.lsl != null ? meta.lsl : null },
         { id: 'usl', type: 'number', label: 'USL', value: meta.usl != null ? meta.usl : null },
@@ -498,15 +500,17 @@
           out.appendChild(kpiRow);
           C3.plots.kpiTile(kpiRow, {
             label: 'Cp', value: num.fmt(c.within.cp, 3),
-            status: c.within.cp >= 1.33 ? 'good' : 'warn'
+            status: c.within.cp >= 1.33 ? 'good' : 'warn',
+            statusLabel: c.within.cp >= 1.33 ? 'ok' : 'basso'
           });
           C3.plots.kpiTile(kpiRow, {
             label: 'Cpk', value: num.fmt(c.within.cpk, 3),
-            status: c.within.cpk >= 1.33 ? 'good' : (c.within.cpk >= 1 ? 'warn' : 'bad')
+            status: c.within.cpk >= 1.33 ? 'good' : (c.within.cpk >= 1 ? 'warn' : 'bad'),
+            statusLabel: cap.verdict(c.within.cpk).level
           });
           C3.plots.kpiTile(kpiRow, { label: 'Ppk', value: num.fmt(c.overall.cpk, 3) });
           C3.plots.kpiTile(kpiRow, {
-            label: 'Stabilita', value: sp.chart.outOfControl === 0 ? 'in controllo' : sp.chart.outOfControl + ' allarmi',
+            label: 'Stabilità', value: sp.chart.outOfControl === 0 ? 'in controllo' : sp.chart.outOfControl + ' allarmi',
             status: sp.chart.outOfControl === 0 ? 'good' : 'bad'
           });
 
@@ -515,11 +519,11 @@
           C3.plots.controlChart(cbox, sp.chart, { yLabel: v.value });
 
           var grid = h('div', { class: 'c3-grid-2' });
-          out.appendChild(ui.panel('Capacita e forma della distribuzione', null, grid));
+          out.appendChild(ui.panel('Capacità e forma della distribuzione', null, grid));
           var g1 = h('div'), g2 = h('div'), g3 = h('div'), g4 = h('div');
           [g1, g2, g3, g4].forEach(function (x) { grid.appendChild(x); });
-          C3.plots.capabilityChart(g1, c, { name: v.value, title: 'Capacita' });
-          C3.plots.probabilityPlot(g2, c.values, { name: v.value, title: 'Normalita' });
+          C3.plots.capabilityChart(g1, c, { name: v.value, title: 'Capacità' });
+          C3.plots.probabilityPlot(g2, c.values, { name: v.value, title: 'Normalità' });
           C3.chart.render(g3, {
             title: 'Ultimi 25 sottogruppi',
             height: 250,
@@ -555,7 +559,7 @@
             ['Pp / Ppk', num.fmt(c.overall.cp, 3) + ' / ' + num.fmt(c.overall.cpk, 3)],
             ['PPM attesi (within / overall)', num.fmt(c.within.ppmTotal, 1) + ' / ' + num.fmt(c.overall.ppmTotal, 1)],
             ['PPM osservati', num.fmt(c.observed.ppmTotal, 1)],
-            ['Normalita p (AD)', num.fmtP(sp.normality.p)],
+            ['Normalità p (AD)', num.fmtP(sp.normality.p)],
             ['Punti fuori controllo', sp.chart.outOfControl, 0]
           ])));
         } catch (e) {

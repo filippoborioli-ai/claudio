@@ -7,7 +7,7 @@
   var C3 = root.C3 = root.C3 || {};
 
   /* ===================== TESTO DELIMITATO ===================== */
-  /** Riconosce il separatore piu probabile. */
+  /** Riconosce il separatore più probabile. */
   function detectDelimiter(text) {
     var sample = text.split(/\r?\n/).slice(0, 12).join('\n');
     var cands = ['\t', ';', ',', '|'];
@@ -64,7 +64,7 @@
     if (!m.length) return new C3.data.Dataset(opts.name);
     var header = opts.header;
     if (header === undefined) {
-      // intestazione se la prima riga non e prevalentemente numerica
+      // intestazione se la prima riga non è prevalentemente numerica
       var first = m[0];
       var numCount = first.filter(function (v) { return v !== '' && isFinite(Number(v.replace(',', '.'))); }).length;
       header = numCount < first.length / 2;
@@ -358,7 +358,7 @@
     return s;
   }
 
-  /** Crea un file xlsx da uno o piu dataset (un foglio per dataset). */
+  /** Crea un file xlsx da uno o più dataset (un foglio per dataset). */
   function toXlsx(datasets) {
     var list = Array.isArray(datasets) ? datasets : [datasets];
     var sheetXmls = [], sheetEntries = [];
@@ -443,13 +443,13 @@
     setTimeout(function () { document.body.removeChild(a); }, 200);
   }
 
-  /** Legge un File dell utente e produce uno o piu Dataset. */
+  /** Legge un File dell’utente e produce uno o più Dataset. */
   function readFile(file) {
     var name = file.name.replace(/\.[^.]+$/, '');
     var ext = (file.name.split('.').pop() || '').toLowerCase();
     if (ext === 'xlsx' || ext === 'xlsm' || ext === 'xls') {
       if (ext === 'xls') {
-        return Promise.reject(new Error('Il formato .xls (Excel 97-2003) non e supportato: salva come .xlsx o .csv.'));
+        return Promise.reject(new Error('Il formato .xls (Excel 97-2003) non è supportato: salva come .xlsx o .csv.'));
       }
       return file.arrayBuffer().then(readXlsx).then(function (sheets) {
         return sheets.map(function (sh) {

@@ -72,6 +72,7 @@
         },
         {
           id: 'y', type: 'select', label: 'Risposta Y', options: numCols,
+          value: C3.app.guessMeasure(ds) || numCols[0],
           when: function (v) { return v.mode !== 'corr' && v.mode !== 'logistic'; }
         },
         {
@@ -211,8 +212,8 @@
               : 'nessuna evidenza di forma sbagliata del modello']
           ]) : null,
           ui.verdict(fit.pModel < alpha()
-            ? 'Il modello spiega una quota significativa della variabilita (p = ' + num.fmtP(fit.pModel) + ').'
-            : 'Il modello non e significativo: il predittore scelto non spiega la risposta.',
+            ? 'Il modello spiega una quota significativa della variabilità (p = ' + num.fmtP(fit.pModel) + ').'
+            : 'Il modello non è significativo: il predittore scelto non spiega la risposta.',
             fit.pModel < alpha() ? 'good' : 'warn'),
           chartBox
         ].filter(Boolean)));
@@ -360,7 +361,7 @@
           : (fit.dw > 2.5 ? 'autocorrelazione negativa probabile' : 'nessun segnale di autocorrelazione');
         return ui.panel('Verifiche sul modello', { sub: 'ipotesi dei minimi quadrati' }, [
           ui.kv([
-            ['Normalita dei residui (Anderson-Darling)', 'A2 = ' + num.fmt(ad.A2, 4) + ', p = ' + num.fmtP(ad.p) +
+            ['Normalità dei residui (Anderson-Darling)', 'A2 = ' + num.fmt(ad.A2, 4) + ', p = ' + num.fmtP(ad.p) +
               (ad.p < alpha() ? ' <b style="color:var(--critical)">(non normali)</b>' : ' (accettabile)')],
             ['Shapiro-Wilk sui residui', 'p = ' + num.fmtP(st.shapiroWilk(fit.resid).p)],
             ['Durbin-Watson', num.fmt(fit.dw, 4) + ' - ' + dwVerdict],
@@ -380,9 +381,9 @@
               { key: 'cook', label: 'Distanza di Cook', digits: 4 },
               { key: 'flags', label: 'Segnalazioni' }
             ], infl.slice(0, 30)), false) : null,
-          ui.verdict('Le quattro ipotesi da verificare sono: <b>linearita</b> (residui senza struttura), ' +
-            '<b>varianza costante</b> (nessun imbuto), <b>normalita</b> dei residui, <b>indipendenza</b> ' +
-            '(Durbin-Watson e grafico nell ordine di raccolta). Se cadono, i p-value non sono affidabili.', 'good')
+          ui.verdict('Le quattro ipotesi da verificare sono: <b>linearità</b> (residui senza struttura), ' +
+            '<b>varianza costante</b> (nessun imbuto), <b>normalità</b> dei residui, <b>indipendenza</b> ' +
+            '(Durbin-Watson e grafico nell’ordine di raccolta). Se cadono, i p-value non sono affidabili.', 'good')
         ].filter(Boolean));
       }
 
@@ -412,13 +413,13 @@
             { key: 'oddsRatio', label: 'Odds ratio', digits: 4 },
             { key: function (r) { return num.fmt(r.ci[0], 3) + ' ... ' + num.fmt(r.ci[1], 3); }, label: 'IC odds ratio' }
           ], fit.coefTable),
-          ui.verdict('L odds ratio dice quanto cambiano le probabilita relative per un aumento unitario del predittore: ' +
-            'valori > 1 aumentano la probabilita dell evento, < 1 la riducono.', 'good')
+          ui.verdict('L’odds ratio dice quanto cambiano le probabilità relative per un aumento unitario del predittore: ' +
+            'valori > 1 aumentano la probabilità dell’evento, < 1 la riducono.', 'good')
         ]));
-        // curva probabilita
+        // curva probabilità
         if (v.xs.length >= 1 && numCols.indexOf(v.xs[0]) >= 0) {
           var box = h('div');
-          L.right.appendChild(ui.panel('Probabilita prevista', { sub: 'variando ' + v.xs[0] + ', altri predittori alla media' }, box));
+          L.right.appendChild(ui.panel('Probabilità prevista', { sub: 'variando ' + v.xs[0] + ', altri predittori alla media' }, box));
           var x0 = v.xs[0];
           var xv = st.clean(ds.numeric(x0));
           var lo = st.min(xv), hi = st.max(xv);
@@ -437,10 +438,10 @@
             pts.push({ x: xx, y: fit.predictProb(row) });
           }
           C3.chart.render(box, {
-            title: 'Probabilita dell evento in funzione di ' + x0,
+            title: 'Probabilità dell’evento in funzione di ' + x0,
             height: 280,
-            x: { label: x0, gridlines: true }, y: { label: 'Probabilita', domain: [0, 1] },
-            series: [{ type: 'line', name: 'Probabilita', points: pts, marker: false, width: 2.5 }],
+            x: { label: x0, gridlines: true }, y: { label: 'Probabilità', domain: [0, 1] },
+            series: [{ type: 'line', name: 'Probabilità', points: pts, marker: false, width: 2.5 }],
             annotations: [{ type: 'hline', y: 0.5, label: '50%', color: C3.chart.pal().muted }],
             legend: false
           });
@@ -567,7 +568,7 @@
               ], p.components),
               ui.verdict('Le prime ' + p.kaiser + ' componenti hanno autovalore > 1 e spiegano ' +
                 num.fmt(100 * p.components[Math.max(0, p.kaiser - 1)].cumulative, 1) +
-                '% della variabilita totale.', 'good'),
+                '% della variabilità totale.', 'good'),
               ui.table([{ key: 'v', label: 'Variabile' }].concat(
                 p.components.slice(0, Math.min(5, p.components.length)).map(function (c, i) {
                   return { key: 'pc' + (i + 1), label: 'PC' + (i + 1), digits: 4 };
@@ -623,7 +624,7 @@
             gb2.appendChild(bar);
             C3.plots.barChart(bar, km.counts.map(function (n, i) {
               return { label: 'Gruppo ' + (i + 1), value: n };
-            }), { title: 'Numerosita dei gruppi', valueLabel: 'n', valueLabels: true, height: 250 });
+            }), { title: 'Numerosità dei gruppi', valueLabel: 'n', valueLabels: true, height: 250 });
           } else if (v.mode === 'hier') {
             var hc = C3.multivariate.hierarchical(ds.asObject(cols), cols, { linkage: v.linkage });
             var labels = hc.cut(v.k);
@@ -640,8 +641,8 @@
                 ['Punti fuori controllo', t2.outOfControl, 0]
               ]),
               ui.verdict(t2.outOfControl
-                ? 'Ci sono ' + t2.outOfControl + ' punti fuori controllo: il processo multivariato non e stabile. ' +
-                  'Una combinazione anomala di variabili puo sfuggire alle carte univariate.'
+                ? 'Ci sono ' + t2.outOfControl + ' punti fuori controllo: il processo multivariato non è stabile. ' +
+                  'Una combinazione anomala di variabili può sfuggire alle carte univariate.'
                 : 'Nessun punto fuori controllo nella carta T2.', t2.outOfControl ? 'bad' : 'good')
             ]));
             var tb = h('div');
@@ -677,7 +678,7 @@
                   lda.groups.forEach(function (g) { row[g] = lda.means[g][j]; });
                   return row;
                 })),
-              ui.verdict('L accuratezza calcolata sugli stessi dati usati per stimare il modello e ottimistica: ' +
+              ui.verdict('L’accuratezza calcolata sugli stessi dati usati per stimare il modello e ottimistica: ' +
                 'per una stima onesta serve un insieme di verifica indipendente.', 'warn')
             ]));
           }
@@ -742,7 +743,7 @@
       }
       var L = splitLayout(el);
       var f = ui.form([
-        { id: 'y', type: 'select', label: 'Serie', options: numCols },
+        { id: 'y', type: 'select', label: 'Serie', options: numCols, value: C3.app.guessMeasure(ds) || numCols[0] },
         {
           id: 'method', type: 'select', label: 'Metodo', options: [
             { value: 'auto', label: 'Confronto automatico dei metodi' },
@@ -789,7 +790,7 @@
                 { key: function (c) { return c.res.accuracy.msd; }, label: 'MSD', digits: 4 }
               ], auto.all),
               ui.verdict('Metodo migliore: <b>' + auto.best.name + '</b> (MAPE ' +
-                num.fmt(auto.best.res.accuracy.mape, 2) + '%). Il MAPE e l errore percentuale medio: ' +
+                num.fmt(auto.best.res.accuracy.mape, 2) + '%). Il MAPE e l’errore percentuale medio: ' +
                 'sotto il 10% la previsione e generalmente buona.', 'good')
             ]));
             var box = h('div');

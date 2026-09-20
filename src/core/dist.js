@@ -1,5 +1,5 @@
 /* CLAUDIO v3 - core/dist.js
- * Distribuzioni di probabilita: pdf/pmf, cdf, inv (quantile), random.
+ * Distribuzioni di probabilità: pdf/pmf, cdf, inv (quantile), random.
  * Ogni distribuzione espone lo stesso contratto -> usata da test, capability, distfit.
  */
 ;(function (root, name, deps, factory) {

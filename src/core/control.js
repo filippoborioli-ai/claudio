@@ -78,7 +78,7 @@
 
   /**
    * Applica i test di Nelson.
-   * points: [{value, cl, sigma}] (sigma = deviazione standard del punto, puo variare con n)
+   * points: [{value, cl, sigma}] (sigma = deviazione standard del punto, può variare con n)
    * Ritorna array di array: per ogni punto la lista dei test violati.
    */
   function nelsonTests(points, opts) {
@@ -560,7 +560,7 @@
     };
   }
 
-  /** CUSUM tabulare (one-sided pair) con h e k in unita di sigma. */
+  /** CUSUM tabulare (one-sided pair) con h e k in unità di sigma. */
   function cusumChart(spec) {
     var groups = spec.groups || makeSubgroups(spec.values, { size: spec.size || 1, by: spec.by });
     var means = groups.map(function (g) { return st.mean(g.values); });

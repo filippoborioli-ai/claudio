@@ -1,7 +1,7 @@
 /* CLAUDIO v3 - ui/views/analyze-view.js
- * Viste di analisi statistica: descrittive e riassunto grafico, normalita e
+ * Viste di analisi statistica: descrittive e riassunto grafico, normalità e
  * identificazione della distribuzione, test di ipotesi, ANOVA e confronti
- * multipli, tabelle di contingenza, potenza e numerosita campionaria.
+ * multipli, tabelle di contingenza, potenza e numerosità campionaria.
  */
 ;(function (root) {
   'use strict';
@@ -38,7 +38,7 @@
     label: 'Descrittive e distribuzione',
     icon: '∑',
     group: 'Analisi',
-    desc: 'Statistiche descrittive complete, riassunto grafico, test di normalita, identificazione della distribuzione e trasformazioni.',
+    desc: 'Statistiche descrittive complete, riassunto grafico, test di normalità, identificazione della distribuzione e trasformazioni.',
     render: function (el) {
       var ds = needData(el);
       if (!ds) return;
@@ -49,13 +49,16 @@
       }
       var L = splitLayout(el);
       var f = ui.form([
-        { id: 'vars', type: 'multiselect', label: 'Variabili', options: numCols, value: [numCols[0]], size: 6 },
+        {
+          id: 'vars', type: 'multiselect', label: 'Variabili', options: numCols,
+          value: [C3.app.guessMeasure(ds) || numCols[0]], size: 6
+        },
         {
           id: 'by', type: 'select', label: 'Raggruppa per (opzionale)',
           options: [{ value: '', label: '(nessuno)' }].concat(ds.categoricalColumns())
         },
         { id: 'graph', type: 'checkbox', label: 'Riassunto grafico', value: true },
-        { id: 'normal', type: 'checkbox', label: 'Test di normalita', value: true },
+        { id: 'normal', type: 'checkbox', label: 'Test di normalità', value: true },
         { id: 'distid', type: 'checkbox', label: 'Identifica la distribuzione migliore', value: false },
         { id: 'outliers', type: 'checkbox', label: 'Ricerca valori anomali', value: true }
       ], function () { run(); });
@@ -126,7 +129,7 @@
               C3.plots.boxplot(c2, groups, { title: 'Boxplot', yLabel: varName });
               C3.plots.probabilityPlot(c3, groups[0].values, { name: varName });
               C3.chart.render(c4, {
-                title: 'Valori nell ordine di raccolta',
+                title: 'Valori nell’ordine di raccolta',
                 height: 240,
                 x: { label: 'Osservazione' }, y: { label: varName },
                 series: [{
@@ -138,7 +141,7 @@
             }
           }
 
-          // normalita
+          // normalità
           if (v.normal) {
             var nRows = groups.map(function (g) {
               var ad = st.andersonDarling(g.values);
@@ -147,10 +150,10 @@
               return {
                 level: g.level, n: g.values.length,
                 ad: ad.A2, adp: ad.p, w: sw.W, wp: sw.p, r: rj.R, rp: rj.p,
-                verdict: (ad.p >= alpha() ? 'compatibile con la normale' : 'si rifiuta la normalita')
+                verdict: (ad.p >= alpha() ? 'compatibile con la normale' : 'si rifiuta la normalità')
               };
             });
-            L.right.appendChild(ui.panel('Test di normalita - ' + varName, { sub: 'alpha = ' + alpha() }, [
+            L.right.appendChild(ui.panel('Test di normalità - ' + varName, { sub: 'alpha = ' + alpha() }, [
               ui.table([
                 { key: 'level', label: 'Gruppo' },
                 { key: 'n', label: 'n', digits: 0 },
@@ -162,7 +165,7 @@
                 { key: 'rp', label: 'p (RJ)', html: true, format: function (x) { return ui.pValue(x, alpha()); } },
                 { key: 'verdict', label: 'Esito' }
               ], nRows),
-              ui.verdict('La normalita serve ai test parametrici e agli indici di capacita: se viene rifiutata, ' +
+              ui.verdict('La normalità serve ai test parametrici e agli indici di capacità: se viene rifiutata, ' +
                 'valuta una trasformazione (Box-Cox, Johnson), un metodo non parametrico oppure una distribuzione diversa.',
                 nRows.every(function (r) { return r.adp >= alpha(); }) ? 'good' : 'warn')
             ]));
@@ -194,7 +197,7 @@
             var fits = C3.capability.bestDistribution(xv);
             var box2 = h('div');
             L.right.appendChild(ui.panel('Identificazione della distribuzione - ' + varName,
-              { sub: 'ordinate per statistica di Anderson-Darling (piu bassa = adattamento migliore)' }, [
+              { sub: 'ordinate per statistica di Anderson-Darling (più bassa = adattamento migliore)' }, [
               ui.table([
                 { key: 'label', label: 'Distribuzione' },
                 { key: 'ad', label: 'AD', digits: 4 },
@@ -223,12 +226,12 @@
             // trasformazioni
             var lam = st.boxCoxLambda(xv);
             var jh = st.johnson(xv);
-            L.right.appendChild(ui.panel('Trasformazioni verso la normalita', null, ui.kv([
+            L.right.appendChild(ui.panel('Trasformazioni verso la normalità', null, ui.kv([
               ['Box-Cox lambda ottimale', isFinite(lam) ? num.fmt(lam, 4) : 'non applicabile (servono valori positivi)'],
-              ['Box-Cox: p di normalita dopo trasformazione', isFinite(lam)
+              ['Box-Cox: p di normalità dopo trasformazione', isFinite(lam)
                 ? num.fmtP(st.andersonDarling(st.boxCox(xv.filter(function (x) { return x > 0; }), lam)).p) : '-'],
               ['Famiglia di Johnson migliore', jh ? jh.family + ' (' + jh.fit.label + ')' : '-'],
-              ['Johnson: p di normalita dopo trasformazione', jh ? num.fmtP(jh.ad.p) : '-']
+              ['Johnson: p di normalità dopo trasformazione', jh ? num.fmtP(jh.ad.p) : '-']
             ])));
           }
         });
@@ -277,6 +280,7 @@
         { id: 'test', type: 'select', label: 'Test', options: TESTS },
         {
           id: 'var1', type: 'select', label: 'Variabile', options: numCols,
+          value: C3.app.guessMeasure(ds) || numCols[0],
           when: function (v) { return ['p1', 'p2', 'pois1', 'pois2', 'chi2', 'gof'].indexOf(v.test) < 0; }
         },
         {
@@ -502,8 +506,8 @@
         if (r.ciWilson) add('IC Wilson', num.fmt(r.ciWilson[0], 5) + ' ... ' + num.fmt(r.ciWilson[1], 5));
         if (r.ciExact) add('IC esatto (Clopper-Pearson)', num.fmt(r.ciExact[0], 5) + ' ... ' + num.fmt(r.ciExact[1], 5));
         if (r.ciRatio) add('IC rapporto varianze', num.fmt(r.ciRatio[0], 5) + ' ... ' + num.fmt(r.ciRatio[1], 5));
-        if (r.cohenD != null) add('Dimensione dell effetto (d di Cohen)', r.cohenD, 3);
-        if (r.effect != null) add('Dimensione dell effetto', r.effect, 3);
+        if (r.cohenD != null) add('Dimensione dell’effetto (d di Cohen)', r.cohenD, 3);
+        if (r.effect != null) add('Dimensione dell’effetto', r.effect, 3);
         if (r.oddsRatio != null && isFinite(r.oddsRatio)) add('Odds ratio', r.oddsRatio, 4);
         if (r.relativeRisk != null && isFinite(r.relativeRisk)) add('Rischio relativo', r.relativeRisk, 4);
         if (r.pExact != null) add('p esatto', num.fmtP(r.pExact));
@@ -512,12 +516,12 @@
         add('<b>p-value</b>', '<b>' + num.fmtP(pv) + '</b>');
 
         var decision = pv < alpha()
-          ? 'Con alpha = ' + alpha() + ' <b>si rifiuta H0</b>: la differenza osservata non e spiegabile dal solo caso.'
+          ? 'Con alpha = ' + alpha() + ' <b>si rifiuta H0</b>: la differenza osservata non è spiegabile dal solo caso.'
           : 'Con alpha = ' + alpha() + ' <b>non si rifiuta H0</b>: i dati non forniscono prove sufficienti della differenza.';
         if (r.equivalent !== undefined) {
           decision = r.equivalent
             ? 'I due gruppi sono <b>equivalenti</b> entro i limiti indicati (entrambi i test unilaterali sono significativi).'
-            : 'Non si puo concludere l equivalenza: almeno un test unilaterale non e significativo.';
+            : 'Non si può concludere l’equivalenza: almeno un test unilaterale non è significativo.';
         }
 
         var parts = [ui.panel(r.title, { sub: r.alt ? altLabel(r.alt) : null }, [
@@ -540,7 +544,7 @@
             C3.chart.render(hist, {
               title: 'Distribuzioni sovrapposte',
               height: 260,
-              x: { label: v.var1 }, y: { label: 'Densita' },
+              x: { label: v.var1 }, y: { label: 'Densità' },
               series: [samples.a, samples.b].map(function (arr, i) {
                 var k = st.kde(arr);
                 return {
@@ -572,7 +576,7 @@
         try {
           if (v.test === 't1' && r.n > 1) {
             var pw = C3.power.tPower1(r.n, Math.abs(r.mean - r.mu0), r.sd, alpha(), v.alt);
-            return h('div', { class: 'small muted', html: 'Potenza del test per l effetto osservato: <b>' +
+            return h('div', { class: 'small muted', html: 'Potenza del test per l’effetto osservato: <b>' +
               num.fmt(100 * pw, 1) + '%</b>. Differenza rilevabile con potenza 0,80: ' +
               num.fmt(C3.power.compute({ test: 't1', n: r.n, sigma: r.sd, power: 0.8, alt: v.alt }).delta, 4) + '.' });
           }
@@ -639,7 +643,7 @@
             ['p-value', '<b>' + num.fmtP(res.p) + '</b>'],
             ['Rapporto di verosimiglianza G2', res.likelihoodRatio, 4],
             ['p (G2)', num.fmtP(res.pLR)],
-            ['V di Cramer (forza dell associazione)', res.cramerV, 4],
+            ['V di Cramer (forza dell’associazione)', res.cramerV, 4],
             ['Frequenza attesa minima', res.minExpected, 2],
             ['% celle con attesa < 5', res.pctSmallExpected, 1]
           ]),
@@ -704,12 +708,12 @@
         {
           id: 'mode', type: 'chips', label: 'Modello', value: 'one', options: [
             { value: 'one', label: 'Una via' },
-            { value: 'factorial', label: 'Fattoriale / piu fattori' },
+            { value: 'factorial', label: 'Fattoriale / più fattori' },
             { value: 'np', label: 'Non parametrico' },
             { value: 'varcomp', label: 'Componenti della varianza' }
           ]
         },
-        { id: 'y', type: 'select', label: 'Risposta', options: numCols },
+        { id: 'y', type: 'select', label: 'Risposta', options: numCols, value: C3.app.guessMeasure(ds) || numCols[0] },
         {
           id: 'factor', type: 'select', label: 'Fattore', options: catCols,
           when: function (v) { return v.mode === 'one' || v.mode === 'np'; }
@@ -859,7 +863,7 @@
           var m = st.mean(g.values);
           g.values.forEach(function (y) { fitVals.push(m); resid.push(y - m); });
         });
-        C3.plots.probabilityPlot(g4, resid, { name: 'Residuo', title: 'Normalita dei residui', height: 280 });
+        C3.plots.probabilityPlot(g4, resid, { name: 'Residuo', title: 'Normalità dei residui', height: 280 });
       }
 
       function factorial(v) {
@@ -876,7 +880,7 @@
         L.right.appendChild(ui.panel('ANOVA fattoriale: ' + v.y, { sub: 'SS adattate (tipo III)' }, [
           ui.anovaTable(rowsAdj, { alpha: alpha() }),
           ui.kv([
-            ['S (dev.st. dell errore)', fit.s, 5],
+            ['S (dev.st. dell’errore)', fit.s, 5],
             ['R-quadro', num.fmt(100 * fit.r2, 2) + '%'],
             ['R-quadro corretto', num.fmt(100 * fit.r2adj, 2) + '%'],
             ['R-quadro previsto (PRESS)', num.fmt(100 * fit.r2press, 2) + '%']
@@ -886,7 +890,7 @@
               return { source: r.label, df: r.df, ss: r.ss, ms: r.ms, F: r.F, p: r.p };
             }), { alpha: alpha() }), false),
           ui.verdict(rowsAdj.some(function (r) { return r.p != null && r.p < alpha(); })
-            ? 'Alcuni termini sono significativi. Se un interazione e significativa, interpreta gli effetti principali solo dentro i livelli dell altro fattore.'
+            ? 'Alcuni termini sono significativi. Se un’interazione è significativa, interpreta gli effetti principali solo dentro i livelli dell’altro fattore.'
             : 'Nessun termine risulta significativo con alpha = ' + alpha() + '.',
             'good')
         ]));
@@ -960,7 +964,7 @@
           ]));
         } else {
           var k = T.kruskalWallis(groups);
-          L.right.appendChild(ui.panel(k.title, { sub: 'alternativa non parametrica all ANOVA' }, [
+          L.right.appendChild(ui.panel(k.title, { sub: 'alternativa non parametrica all’ANOVA' }, [
             ui.table([
               { key: 'level', label: v.factor },
               { key: 'n', label: 'n', digits: 0 },
@@ -988,7 +992,7 @@
       function varComponents(v) {
         var r = C3.anova.varianceComponents(ds.numeric(v.y), ds.col(v.factorA), ds.col(v.factorB), { nested: v.nested });
         if (!r.balanced) {
-          L.right.appendChild(ui.verdict('Il disegno non e bilanciato: le componenti della varianza con questo metodo ' +
+          L.right.appendChild(ui.verdict('Il disegno non è bilanciato: le componenti della varianza con questo metodo ' +
             'richiedono lo stesso numero di osservazioni per cella.', 'warn'));
           return;
         }
@@ -1015,7 +1019,7 @@
             { key: 'pct', label: '% del totale', digits: 2 },
             { key: 'sd', label: 'Dev.st.', digits: 5 }
           ], rows),
-          ui.verdict('Le componenti dicono <b>dove nasce la variabilita</b>: e la base del Gage R&R e della scelta ' +
+          ui.verdict('Le componenti dicono <b>dove nasce la variabilità</b>: e la base del Gage R&R e della scelta ' +
             'del punto in cui intervenire (materiale, macchina, operatore, tempo).', 'good')
         ]));
         var box = h('div');
@@ -1037,7 +1041,7 @@
     label: 'Potenza e campione',
     icon: '◔',
     group: 'Analisi',
-    desc: 'Quante prove servono? Calcolo di potenza, numerosita campionaria e differenza rilevabile per i test piu usati, piani di campionamento in accettazione.',
+    desc: 'Quante prove servono? Calcolo di potenza, numerosità campionaria e differenza rilevabile per i test più usati, piani di campionamento in accettazione.',
     render: function (el) {
       var L = splitLayout(el);
       var f = ui.form([
@@ -1056,7 +1060,7 @@
         },
         {
           id: 'solve', type: 'chips', label: 'Cosa calcolare', value: 'n', options: [
-            { value: 'n', label: 'Numerosita' },
+            { value: 'n', label: 'Numerosità' },
             { value: 'power', label: 'Potenza' },
             { value: 'delta', label: 'Differenza rilevabile' }
           ], when: function (v) { return ['t1', 't2', 'prop1', 'prop2', 'anova', 'var1'].indexOf(v.test) >= 0; }
@@ -1064,7 +1068,7 @@
         { id: 'delta', type: 'number', label: 'Differenza da rilevare', value: 1, when: function (v) { return ['t1', 't2', 'anova'].indexOf(v.test) >= 0; } },
         { id: 'sigma', type: 'number', label: 'Deviazione standard attesa', value: 1, when: function (v) { return ['t1', 't2', 'anova', 'ci', 'doe'].indexOf(v.test) >= 0; } },
         { id: 'power', type: 'number', label: 'Potenza desiderata', value: 0.8, step: 0.05, min: 0.5, max: 0.999 },
-        { id: 'n', type: 'number', label: 'Numerosita per gruppo', value: 20, min: 2 },
+        { id: 'n', type: 'number', label: 'Numerosità per gruppo', value: 20, min: 2 },
         { id: 'groups', type: 'number', label: 'Numero di gruppi', value: 4, min: 2, when: function (v) { return v.test === 'anova'; } },
         { id: 'p0', type: 'number', label: 'Proporzione di riferimento', value: 0.1, step: 0.01, when: function (v) { return v.test === 'prop1'; } },
         { id: 'p1', type: 'number', label: 'Proporzione attesa', value: 0.2, step: 0.01, when: function (v) { return ['prop1', 'prop2'].indexOf(v.test) >= 0; } },
@@ -1094,14 +1098,14 @@
         var v = f.values();
         try {
           if (v.test === 'ci') {
-            L.right.appendChild(ui.panel('Numerosita per la precisione della stima', null, ui.kv([
+            L.right.appendChild(ui.panel('Numerosità per la precisione della stima', null, ui.kv([
               ['n per la media (semi-ampiezza ' + v.E + ')', C3.power.nForMeanCI(v.sigma, v.E, conf()), 0],
               ['n per una proporzione (p = 0,5, semi-ampiezza ' + v.E + ')', C3.power.nForPropCI(0.5, v.E, conf()), 0],
               ['n per stimare sigma con precisione relativa 20%', C3.power.nForSigma(0.2, conf()), 0],
               ['n per stimare Cpk = 1,33 con precisione 10%', C3.power.nForCpk(1.33, 0.1, conf()), 0]
             ])));
-            L.right.appendChild(ui.verdict('La numerosita per <b>stimare</b> un parametro con una data precisione ' +
-              'e diversa da quella per <b>rilevare</b> una differenza: qui non serve alcuna ipotesi alternativa.', 'good'));
+            L.right.appendChild(ui.verdict('La numerosità per <b>stimare</b> un parametro con una data precisione ' +
+              'è diversa da quella per <b>rilevare</b> una differenza: qui non serve alcuna ipotesi alternativa.', 'good'));
             return;
           }
           if (v.test === 'sampling') {
@@ -1115,12 +1119,12 @@
               ui.kv([
                 ['Dimensione del campione n', plan.n, 0],
                 ['Numero di accettazione c', plan.c, 0],
-                ['Probabilita di accettare a AQL', num.fmt(plan.pAcceptAQL, 4) + ' (rischio del produttore ' + num.fmt(1 - plan.pAcceptAQL, 4) + ')'],
-                ['Probabilita di accettare a RQL', num.fmt(plan.pAcceptRQL, 4) + ' (rischio del consumatore)'],
+                ['Probabilità di accettare a AQL', num.fmt(plan.pAcceptAQL, 4) + ' (rischio del produttore ' + num.fmt(1 - plan.pAcceptAQL, 4) + ')'],
+                ['Probabilità di accettare a RQL', num.fmt(plan.pAcceptRQL, 4) + ' (rischio del consumatore)'],
                 ['Piano equivalente c = 0', 'n = ' + zero.n]
               ]),
               ui.verdict('Il piano accetta il lotto se i difettosi nel campione sono al massimo ' + plan.c +
-                ' su ' + plan.n + ' pezzi ispezionati. Un piano c = 0 richiede meno pezzi ma respinge lotti buoni piu spesso.', 'good')
+                ' su ' + plan.n + ' pezzi ispezionati. Un piano c = 0 richiede meno pezzi ma respinge lotti buoni più spesso.', 'good')
             ]));
             var ocBox = h('div');
             L.right.appendChild(ui.panel('Curva operativa caratteristica', null, ocBox));
@@ -1135,14 +1139,14 @@
             L.right.appendChild(ui.panel('Potenza di un disegno 2^' + (v.p ? '(' + v.k + '-' + v.p + ')' : v.k), null, [
               ui.kv([
                 ['Prove totali', pw.runs, 0],
-                ['Gradi di liberta per l errore', pw.df, 0],
+                ['Gradi di liberta per l’errore', pw.df, 0],
                 ['Errore standard di un effetto', pw.seEffect, 5],
                 ['Potenza per un effetto di ' + v.effect, num.fmt(100 * pw.power, 1) + '%'],
                 ['Effetto rilevabile con potenza 0,80', pw.detectable, 4]
               ]),
               ui.verdict(pw.power >= 0.8
-                ? 'Il disegno ha potenza adeguata per l effetto indicato.'
-                : 'Potenza insufficiente: aumenta le repliche, riduci sigma (migliora la misura o il controllo delle condizioni) oppure accetta di rilevare solo effetti piu grandi.',
+                ? 'Il disegno ha potenza adeguata per l’effetto indicato.'
+                : 'Potenza insufficiente: aumenta le repliche, riduci sigma (migliora la misura o il controllo delle condizioni) oppure accetta di rilevare solo effetti più grandi.',
                 pw.power >= 0.8 ? 'good' : 'warn')
             ]));
             var curveBox = h('div');
@@ -1174,15 +1178,15 @@
           var r = C3.power.compute(spec);
           L.right.appendChild(ui.panel('Risultato', { sub: TEST_LABEL[v.test] }, [
             ui.kv([
-              ['Numerosita per gruppo', r.n != null ? num.fmt(r.n, 0) : '-'],
-              r.n2 != null ? ['Numerosita secondo gruppo', num.fmt(r.n2, 0)] : null,
-              r.totalN != null ? ['Numerosita totale', num.fmt(r.totalN, 0)] : null,
+              ['Numerosità per gruppo', r.n != null ? num.fmt(r.n, 0) : '-'],
+              r.n2 != null ? ['Numerosità secondo gruppo', num.fmt(r.n2, 0)] : null,
+              r.totalN != null ? ['Numerosità totale', num.fmt(r.totalN, 0)] : null,
               ['Potenza', r.power != null ? num.fmt(100 * r.power, 2) + '%' : '-'],
               r.delta != null ? ['Differenza rilevabile', num.fmt(r.delta, 5)] : null,
               ['alpha', alpha()],
               ['Ipotesi alternativa', v.alt === 'two' ? 'bilaterale' : 'unilaterale']
             ].filter(Boolean)),
-            ui.verdict('Regola pratica: la numerosita cresce con il <b>quadrato</b> del rapporto sigma/differenza. ' +
+            ui.verdict('Regola pratica: la numerosità cresce con il <b>quadrato</b> del rapporto sigma/differenza. ' +
               'Dimezzare la differenza rilevabile costa quattro volte le prove.', 'good')
           ]));
           // curva di potenza
@@ -1206,7 +1210,7 @@
             ns.push({ name: 'n = ' + nn, points: pts });
           });
           C3.plots.powerCurvePlot(cbox, ns, {
-            xLabel: v.test.indexOf('prop') === 0 ? 'Scostamento (unita x10)' : 'Differenza da rilevare'
+            xLabel: v.test.indexOf('prop') === 0 ? 'Scostamento (unità x10)' : 'Differenza da rilevare'
           });
         } catch (e) {
           console.error(e);

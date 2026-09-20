@@ -1,7 +1,7 @@
 /* CLAUDIO v3 - core/designs.js
  * Piani sperimentali classici che completano doe.js:
  *  - blocchi randomizzati completi (RCBD) e incompleti bilanciati (BIBD)
- *  - quadrato latino e greco-latino (ortogonalita verificata)
+ *  - quadrato latino e greco-latino (ortogonalità verificata)
  *  - split-plot (fattori difficili da variare)
  *  - disegni per miscele: simplex lattice, simplex centroid, vertici estremi
  *    con modelli di Scheffe e response trace
@@ -43,7 +43,7 @@
       treatments: tr, blocks: blocks, totalRuns: rows.length,
       table: rows.map(function (r, i) { return Object.assign({ StdOrder: i + 1, RunOrder: i + 1 }, r); }),
       notes: [
-        'Il blocco cattura una fonte di variabilita nota e non controllabile (giorno, lotto, macchina, operatore).',
+        'Il blocco cattura una fonte di variabilità nota e non controllabile (giorno, lotto, macchina, operatore).',
         'Gradi di liberta: trattamenti ' + (tr.length - 1) + ', blocchi ' + (blocks.length - 1) +
           ', errore ' + ((tr.length - 1) * (blocks.length - 1) * rep + (rep - 1) * tr.length * blocks.length) + '.',
         'Analisi: ANOVA a due vie senza interazione (modello Y = trattamento + blocco).'
@@ -113,7 +113,7 @@
       table: rows.map(function (r2, i) { return Object.assign({ StdOrder: i + 1, RunOrder: i + 1 }, r2); }),
       notes: [
         'Ogni blocco contiene ' + k + ' trattamenti su ' + v + '; ogni coppia di trattamenti compare insieme ' + lambda + ' volte.',
-        'Utile quando il blocco (giorno, forno, pannello) non puo ospitare tutti i trattamenti.',
+        'Utile quando il blocco (giorno, forno, pannello) non può ospitare tutti i trattamenti.',
         'Analisi: modello Y = trattamento + blocco con medie marginali stimate (le medie semplici sono distorte).'
       ]
     };
@@ -177,7 +177,7 @@
   function graecoLatin(spec) {
     var k = spec.treatments.length;
     var greek = spec.greekTreatments || Array.from({ length: k }, function (_, i) { return 'G' + (i + 1); });
-    if (greek.length !== k) return { error: 'I due insiemi di trattamenti devono avere la stessa numerosita.' };
+    if (greek.length !== k) return { error: 'I due insiemi di trattamenti devono avere la stessa numerosità.' };
     // costruzione: L1 = (i+j) mod k, L2 = (i + c*j) mod k con c che rende ortogonali
     var found = null;
     // k pari: la costruzione ciclica non funziona, si usa una coppia nota (esiste per k=4)
@@ -294,7 +294,7 @@
       table: rows.map(function (r2, i) { return Object.assign({ StdOrder: i + 1, RunOrder: i + 1 }, r2); }),
       notes: [
         'I fattori difficili da variare cambiano solo fra whole plot: si riducono i cambi di setup.',
-        'Attenzione: due errori diversi. I fattori whole plot vanno testati contro l errore di whole plot (' + dfWholeErr + ' gdl), i subplot contro l errore di subplot.',
+        'Attenzione: due errori diversi. I fattori whole plot vanno testati contro l’errore di whole plot (' + dfWholeErr + ' gdl), i subplot contro l’errore di subplot.',
         'Un\'analisi che ignora la struttura split-plot sovrastima la significativita dei fattori difficili da variare.'
       ],
       analyze: function (data, yName) {
@@ -418,7 +418,7 @@
       notes: [
         'Nelle miscele i fattori sono proporzioni e sommano a 1: non si possono variare in modo indipendente.',
         'Il modello e di Scheffe (senza costante): lineare, quadratico o cubico speciale.',
-        'Interpretazione: i coefficienti lineari sono le risposte attese nei componenti puri; i termini incrociati misurano la sinergia o l antagonismo fra componenti.'
+        'Interpretazione: i coefficienti lineari sono le risposte attese nei componenti puri; i termini incrociati misurano la sinergia o l’antagonismo fra componenti.'
       ]
     };
   }
@@ -608,7 +608,7 @@
       notes: [
         'Tre livelli per fattore con circa 2k+1 prove: stima gli effetti principali senza confondimento con interazioni a 2 fattori.',
         'I termini quadratici non sono confusi con gli effetti principali: rileva la curvatura, cosa impossibile con un frazionario a 2 livelli.',
-        'Ideale come primo esperimento quando i fattori sono molti (6-12) e si sospetta non linearita.'
+        'Ideale come primo esperimento quando i fattori sono molti (6-12) e si sospetta non linearità.'
       ]
     };
   }

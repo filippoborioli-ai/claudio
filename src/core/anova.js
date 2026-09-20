@@ -1,5 +1,5 @@
 /* CLAUDIO v3 - core/anova.js
- * ANOVA a una via (classica e di Welch), ANOVA a piu vie tramite GLM,
+ * ANOVA a una via (classica e di Welch), ANOVA a più vie tramite GLM,
  * confronti multipli (Tukey, Fisher LSD, Bonferroni, Sidak, Games-Howell, Dunnett),
  * distribuzione del range studentizzato calcolata per quadratura,
  * componenti della varianza per disegni bilanciati (crossed / nested).
@@ -28,14 +28,14 @@ function (num, dist, st, T, reg) {
     return num.clamp(k * num.integrate(f, -8.5, 8.5, 80), 0, 1);
   }
 
-  /** P(q_{k,df} < q): integra prangeInf sulla densita di s = sqrt(chi2_df/df). */
+  /** P(q_{k,df} < q): integra prangeInf sulla densità di s = sqrt(chi2_df/df). */
   function ptukey(q, k, df) {
     if (q <= 0) return 0;
     if (!isFinite(df) || df > 25000) return prangeInf(q, k);
     var lc = (df / 2) * Math.log(df / 2) - num.lgamma(df / 2);
     var fs = function (s) {
       if (s <= 0) return 0;
-      // densita di s: 2 * (df/2)^(df/2) / Gamma(df/2) * s^(df-1) * exp(-df s^2 / 2)
+      // densità di s: 2 * (df/2)^(df/2) / Gamma(df/2) * s^(df-1) * exp(-df s^2 / 2)
       var logd = Math.log(2) + lc + (df - 1) * Math.log(s) - df * s * s / 2;
       var d = Math.exp(logd);
       if (!isFinite(d) || d < 1e-14) return 0;
@@ -278,7 +278,7 @@ function (num, dist, st, T, reg) {
 
   /**
    * Componenti della varianza per disegno bilanciato completamente incrociato
-   * o annidato a 2 livelli (usato da Gage R&R e da studi di capacita).
+   * o annidato a 2 livelli (usato da Gage R&R e da studi di capacità).
    * Dati: y, factorA, factorB (annidato in A se nested=true), n replicati.
    */
   function varianceComponents(y, fa, fb, opts) {

@@ -18,7 +18,7 @@
 ['numeric', 'dist', 'stats'], function (num, dist, st) {
   'use strict';
 
-  /* ============ conversioni di qualita ============ */
+  /* ============ conversioni di qualità ============ */
   /** Livello sigma da DPMO (con shift standard 1,5). */
   function sigmaFromDpmo(dpmo, shift) {
     var p = num.clamp(dpmo / 1e6, 1e-12, 1 - 1e-12);
@@ -27,7 +27,7 @@
   function dpmoFromSigma(sigma, shift) {
     return (1 - dist.normal.cdf(sigma - (shift == null ? 1.5 : shift))) * 1e6;
   }
-  /** Da difetti/unita a rendimento (Poisson). */
+  /** Da difetti/unità a rendimento (Poisson). */
   function yieldFromDpu(dpu) { return Math.exp(-dpu); }
   function dpuFromYield(y) { return -Math.log(num.clamp(y, 1e-12, 1)); }
 
@@ -56,7 +56,7 @@
     };
   }
 
-  /** DPMO da difetti, unita, opportunita per unita. */
+  /** DPMO da difetti, unità, opportunita per unità. */
   function dpmo(defects, units, opportunities) {
     var d = defects / (units * opportunities);
     return {
@@ -131,7 +131,7 @@
 
   /* ============ FMEA ============ */
   /**
-   * Calcola RPN e criticita per le righe FMEA.
+   * Calcola RPN e criticità per le righe FMEA.
    * rows: [{ item, failureMode, effect, severity, cause, occurrence, control, detection }]
    */
   function fmea(rows) {
@@ -179,7 +179,7 @@
     return 'L (bassa)';
   }
 
-  /** Costo della scarsa qualita. */
+  /** Costo della scarsa qualità. */
   function copq(spec) {
     var internal = (spec.scrap || 0) + (spec.rework || 0) + (spec.downtime || 0) + (spec.reinspection || 0);
     var external = (spec.warranty || 0) + (spec.returns || 0) + (spec.complaints || 0) + (spec.penalties || 0);
@@ -216,8 +216,8 @@
       requiredStations: n,
       utilization: spec.cycleTime && n ? 100 * spec.cycleTime / (n * takt) : null,
       verdict: spec.cycleTime == null ? null : (spec.cycleTime > takt
-        ? 'Il tempo ciclo supera il takt: la linea non soddisfa la domanda, serve ridurre il ciclo o aggiungere capacita.'
-        : 'Tempo ciclo entro il takt: capacita adeguata alla domanda.')
+        ? 'Il tempo ciclo supera il takt: la linea non soddisfa la domanda, serve ridurre il ciclo o aggiungere capacità.'
+        : 'Tempo ciclo entro il takt: capacità adeguata alla domanda.')
     };
   }
 
@@ -243,12 +243,12 @@
         (value >= 0.6 ? 'tipico di molte aziende (60-85%): margini di miglioramento' :
           'basso (< 60%): perdite importanti da attaccare'),
       classification: [
-        { loss: 'Guasti e fermate', component: 'Disponibilita' },
-        { loss: 'Setup e cambi', component: 'Disponibilita' },
+        { loss: 'Guasti e fermate', component: 'Disponibilità' },
+        { loss: 'Setup e cambi', component: 'Disponibilità' },
         { loss: 'Micro-fermate', component: 'Prestazione' },
-        { loss: 'Velocita ridotta', component: 'Prestazione' },
-        { loss: 'Scarti di avvio', component: 'Qualita' },
-        { loss: 'Difetti in produzione', component: 'Qualita' }
+        { loss: 'Velocità ridotta', component: 'Prestazione' },
+        { loss: 'Scarti di avvio', component: 'Qualità' },
+        { loss: 'Difetti in produzione', component: 'Qualità' }
       ]
     };
   }
@@ -276,7 +276,7 @@
       cards: Math.ceil(cards), cardsExact: cards,
       containerSize: container, wipCap: Math.ceil(cards) * container,
       coverageTime: Math.ceil(cards) * container / demand,
-      note: 'N = (domanda x lead time di ripristino x (1 + fattore di sicurezza)) / capacita contenitore.'
+      note: 'N = (domanda x lead time di ripristino x (1 + fattore di sicurezza)) / capacità contenitore.'
     };
   }
 
@@ -301,7 +301,7 @@
     };
   }
 
-  /** Analisi SMED: classifica le attivita e stima il guadagno. */
+  /** Analisi SMED: classifica le attività e stima il guadagno. */
   function smed(activities) {
     var internal = 0, external = 0, converted = 0, reduced = 0;
     activities.forEach(function (a) {
@@ -319,9 +319,9 @@
       currentChangeover: current, targetChangeover: Math.max(0, target),
       improvementPct: current ? 100 * (current - Math.max(0, target)) / current : 0,
       steps: [
-        '1. Separare attivita interne (a macchina ferma) da esterne (a macchina in moto).',
-        '2. Convertire attivita interne in esterne: preparazione utensili, preriscaldo, pre-montaggio.',
-        '3. Snellire le attivita interne rimaste: attacchi rapidi, riferimenti, eliminare regolazioni.',
+        '1. Separare attività interne (a macchina ferma) da esterne (a macchina in moto).',
+        '2. Convertire attività interne in esterne: preparazione utensili, preriscaldo, pre-montaggio.',
+        '3. Snellire le attività interne rimaste: attacchi rapidi, riferimenti, eliminare regolazioni.',
         '4. Standardizzare e addestrare; misurare il tempo di cambio come KPI.'
       ]
     };
@@ -353,7 +353,7 @@
   function lineBalance(tasks, takt) {
     var total = tasks.reduce(function (a, t) { return a + Number(t.time || 0); }, 0);
     var theoretical = Math.ceil(total / takt);
-    // assegnazione greedy rispettando l ordine
+    // assegnazione greedy rispettando l’ordine
     var stations = [], cur = { tasks: [], time: 0, index: 1 };
     tasks.forEach(function (t) {
       var tt = Number(t.time) || 0;
@@ -391,17 +391,17 @@
       cycleStock: spec.orderQty ? spec.orderQty / 2 : null,
       eoq: spec.orderCost && spec.holdingCost
         ? Math.sqrt(2 * avgDemand * spec.periodsPerYear * spec.orderCost / spec.holdingCost) : null,
-      note: 'SS = z * radice(LT * sd_domanda^2 + domanda^2 * sd_LT^2). Copre variabilita di domanda e di lead time.'
+      note: 'SS = z * radice(LT * sd_domanda^2 + domanda^2 * sd_LT^2). Copre variabilità di domanda e di lead time.'
     };
   }
 
-  /** Cinque perche: struttura guidata. */
+  /** Cinque perché: struttura guidata. */
   function fiveWhys(problem, whys) {
     return {
       problem: problem,
       chain: whys.map(function (w, i) { return { level: i + 1, why: w }; }),
       rootCause: whys[whys.length - 1],
-      note: 'Verificare la catena a rovescio con "quindi": se la logica non regge, la causa radice non e quella.'
+      note: 'Verificare la catena a rovescio con "quindi": se la logica non regge, la causa radice non è quella.'
     };
   }
 
@@ -415,25 +415,25 @@
     },
     {
       phase: 'Measure', goal: 'Misurare lo stato attuale con dati affidabili.',
-      tools: ['Piano di raccolta dati', 'Definizioni operative', 'MSA / Gage R&R', 'Carte di controllo di base', 'Capacita di processo', 'Pareto', 'Value stream map'],
-      deliverables: ['Sistema di misura validato', 'Baseline di capacita (Cp, Cpk, sigma)', 'Mappa del processo', 'Y e X candidate'],
-      gate: 'Il sistema di misura e adeguato (%R&R < 30%) e la baseline e stabile?'
+      tools: ['Piano di raccolta dati', 'Definizioni operative', 'MSA / Gage R&R', 'Carte di controllo di base', 'Capacità di processo', 'Pareto', 'Value stream map'],
+      deliverables: ['Sistema di misura validato', 'Baseline di capacità (Cp, Cpk, sigma)', 'Mappa del processo', 'Y e X candidate'],
+      gate: 'Il sistema di misura è adeguato (%R&R < 30%) e la baseline è stabile?'
     },
     {
       phase: 'Analyze', goal: 'Identificare e verificare le cause radice.',
-      tools: ['Ishikawa e 5 perche', 'Grafici multi-vari', 'Test di ipotesi', 'ANOVA', 'Regressione', 'FMEA di processo', 'Analisi dei tempi/flusso'],
+      tools: ['Ishikawa e 5 perché', 'Grafici multi-vari', 'Test di ipotesi', 'ANOVA', 'Regressione', 'FMEA di processo', 'Analisi dei tempi/flusso'],
       deliverables: ['Elenco delle X critiche verificate statisticamente', 'Modello Y = f(X)'],
       gate: 'Ogni causa radice e supportata da dati, non da opinioni?'
     },
     {
       phase: 'Improve', goal: 'Progettare, testare e implementare la soluzione.',
-      tools: ['DoE (screening, fattoriale, RSM)', 'Ottimizzazione con desiderabilita', 'Prove pilota', 'Poka-yoke', 'SMED', 'Kanban / flusso', 'Analisi costi-benefici'],
+      tools: ['DoE (screening, fattoriale, RSM)', 'Ottimizzazione con desiderabilità', 'Prove pilota', 'Poka-yoke', 'SMED', 'Kanban / flusso', 'Analisi costi-benefici'],
       deliverables: ['Impostazioni ottimali dei parametri', 'Conferma sperimentale', 'Piano di implementazione'],
       gate: 'Il miglioramento e confermato su prove indipendenti (test di conferma)?'
     },
     {
       phase: 'Control', goal: 'Rendere stabile il guadagno.',
-      tools: ['Piano di controllo', 'Carte di controllo', 'Capacita finale', 'Standard work', 'Formazione', 'Audit e 5S', 'Cruscotto KPI'],
+      tools: ['Piano di controllo', 'Carte di controllo', 'Capacità finale', 'Standard work', 'Formazione', 'Audit e 5S', 'Cruscotto KPI'],
       deliverables: ['Control plan', 'Documentazione aggiornata', 'Trasferimento al process owner', 'Beneficio validato dal controlling'],
       gate: 'Il processo e in controllo statistico e il beneficio e tracciato nel tempo?'
     }
@@ -441,13 +441,13 @@
 
   var LEAN_WASTES = [
     { code: 'D', name: 'Difetti', desc: 'Scarti, rilavorazioni, ispezioni aggiuntive, resi.', signals: ['scarti > target', 'rilavoro non tracciato', 'ispezione 100%'], counter: ['poka-yoke', 'SPC', 'standard work', 'MSA'] },
-    { code: 'O', name: 'Sovrapproduzione', desc: 'Produrre piu o prima del necessario: la peggiore perche genera le altre.', signals: ['magazzino di semilavorati', 'lotti grandi', 'push planning'], counter: ['pull/kanban', 'livellamento', 'riduzione lotto (SMED)'] },
+    { code: 'O', name: 'Sovrapproduzione', desc: 'Produrre più o prima del necessario: la peggiore perché genera le altre.', signals: ['magazzino di semilavorati', 'lotti grandi', 'push planning'], counter: ['pull/kanban', 'livellamento', 'riduzione lotto (SMED)'] },
     { code: 'W', name: 'Attese', desc: 'Persone o materiali in coda, macchine ferme.', signals: ['WIP tra fasi', 'attese approvazioni', 'setup lunghi'], counter: ['bilanciamento', 'flusso continuo', 'manutenzione autonoma'] },
     { code: 'N', name: 'Talento non utilizzato', desc: 'Competenze e idee degli operatori non impiegate.', signals: ['nessun suggerimento', 'decisioni solo top-down'], counter: ['kaizen', 'team problem solving', 'formazione'] },
     { code: 'T', name: 'Trasporti', desc: 'Movimentazione di materiali senza aggiunta di valore.', signals: ['percorsi lunghi', 'doppie movimentazioni'], counter: ['layout a celle', 'point of use', 'milk run'] },
     { code: 'I', name: 'Scorte', desc: 'Materie prime, WIP e finiti in eccesso.', signals: ['copertura elevata', 'obsolescenza'], counter: ['kanban', 'supermarket', 'riduzione lead time'] },
     { code: 'M', name: 'Movimenti', desc: 'Movimenti inutili delle persone.', signals: ['ricerca attrezzi', 'piegamenti ripetuti'], counter: ['5S', 'ergonomia', 'shadow board'] },
-    { code: 'E', name: 'Processi eccessivi', desc: 'Lavorazioni o controlli oltre le richieste del cliente.', signals: ['tolleranze piu strette del necessario', 'report non letti'], counter: ['analisi valore', 'CTQ chiari', 'semplificazione'] }
+    { code: 'E', name: 'Processi eccessivi', desc: 'Lavorazioni o controlli oltre le richieste del cliente.', signals: ['tolleranze più strette del necessario', 'report non letti'], counter: ['analisi valore', 'CTQ chiari', 'semplificazione'] }
   ];
 
   return {

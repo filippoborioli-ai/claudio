@@ -16,8 +16,8 @@
   var SAMPLES = [
     {
       id: 'riempimento',
-      name: 'Riempimento bottiglie (SPC + capacita)',
-      desc: '125 misure di volume in sottogruppi da 5, specifica 500 +/- 6 ml. Adatto a Xbar-R, capacita, test di normalita.',
+      name: 'Riempimento bottiglie (SPC + capacità)',
+      desc: '125 misure di volume in sottogruppi da 5, specifica 500 +/- 6 ml. Adatto a Xbar-R, capacità, test di normalità.',
       build: function () {
         var r = num.rng(101);
         var vol = [], sub = [], turno = [], ora = [];
@@ -54,7 +54,7 @@
     {
       id: 'difetti',
       name: 'Difettosi per lotto (carta p)',
-      desc: '30 lotti con numerosita variabile e conteggio di pezzi difettosi. Adatto a carta p, capacita binomiale, Pareto.',
+      desc: '30 lotti con numerosità variabile e conteggio di pezzi difettosi. Adatto a carta p, capacità binomiale, Pareto.',
       build: function () {
         var r = num.rng(303);
         var n = [], d = [], lotto = [], linea = [];
@@ -93,7 +93,7 @@
     },
     {
       id: 'doe23',
-      name: 'DoE fattoriale 2^3 (velocita di attacco)',
+      name: 'DoE fattoriale 2^3 (velocità di attacco)',
       desc: 'Disegno 2^3 con 2 repliche: distanza elettrodi, flusso gas, potenza. Esempio classico di analisi fattoriale.',
       build: function () {
         var r = num.rng(505);
@@ -110,8 +110,8 @@
           }
         }
         return ds('DoE 2^3 attacco', {
-          Ordine: ordine, Distanza: A, Flusso: B, Potenza: C, Velocita: y
-        }, { factors: ['Distanza', 'Flusso', 'Potenza'], response: 'Velocita' });
+          Ordine: ordine, Distanza: A, Flusso: B, Potenza: C, Velocità: y
+        }, { factors: ['Distanza', 'Flusso', 'Potenza'], response: 'Velocità' });
       }
     },
     {
@@ -279,16 +279,16 @@
       desc: '90 lotti con 6 variabili correlate e una classe di esito: PCA, cluster, T2 di Hotelling.',
       build: function () {
         var r = num.rng(141);
-        var cols = { Temperatura: [], Pressione: [], Umidita: [], Viscosita: [], pH: [], Densita: [], Esito: [] };
+        var cols = { Temperatura: [], Pressione: [], Umidità: [], Viscosità: [], pH: [], Densità: [], Esito: [] };
         for (var i = 0; i < 90; i++) {
           var f1 = r.normal(0, 1), f2 = r.normal(0, 1);
           var bad = i > 80;
           cols.Temperatura.push(num.round(180 + 6 * f1 + r.normal(0, 1.4) + (bad ? 9 : 0), 2));
           cols.Pressione.push(num.round(3 + 0.5 * f1 + r.normal(0, 0.12), 3));
-          cols.Umidita.push(num.round(45 + 5 * f2 + r.normal(0, 1.1), 2));
-          cols.Viscosita.push(num.round(120 - 8 * f2 + r.normal(0, 2.2) + (bad ? -12 : 0), 2));
+          cols.Umidità.push(num.round(45 + 5 * f2 + r.normal(0, 1.1), 2));
+          cols.Viscosità.push(num.round(120 - 8 * f2 + r.normal(0, 2.2) + (bad ? -12 : 0), 2));
           cols.pH.push(num.round(7 + 0.2 * f1 - 0.1 * f2 + r.normal(0, 0.05), 3));
-          cols.Densita.push(num.round(1.02 + 0.01 * f1 + r.normal(0, 0.004), 4));
+          cols.Densità.push(num.round(1.02 + 0.01 * f1 + r.normal(0, 0.004), 4));
           cols.Esito.push(bad ? 'Non conforme' : (r.uniform() < 0.12 ? 'Non conforme' : 'Conforme'));
         }
         return ds('Profili di processo', cols);
@@ -297,7 +297,7 @@
     {
       id: 'affidabilita',
       name: 'Tempi a rottura (Weibull)',
-      desc: '80 tempi a guasto da distribuzione di Weibull: identificazione distribuzione e capacita non normale.',
+      desc: '80 tempi a guasto da distribuzione di Weibull: identificazione distribuzione è capacità non normale.',
       build: function () {
         var r = num.rng(151);
         var t = [], fornitore = [];

@@ -1,6 +1,6 @@
 /* CLAUDIO v3 - ui/views/spc-view.js
  * Controllo statistico di processo: carte per variabili e attributi,
- * carte ad alta sensibilita, test di Nelson configurabili, fasi.
+ * carte ad alta sensibilità, test di Nelson configurabili, fasi.
  */
 ;(function (root) {
   'use strict';
@@ -15,11 +15,11 @@
     { value: 'ewma', label: 'EWMA (piccoli scostamenti)' },
     { value: 'cusum', label: 'CUSUM (somme cumulate)' },
     { value: 'ma', label: 'Media mobile' },
-    { value: 'z-mr', label: 'Z-MR (lotti brevi, piu prodotti)' },
+    { value: 'z-mr', label: 'Z-MR (lotti brevi, più prodotti)' },
     { value: 'p', label: 'Carta p (frazione difettosa)' },
     { value: 'np', label: 'Carta np (numero di difettosi)' },
-    { value: 'c', label: 'Carta c (difetti per unita costante)' },
-    { value: 'u', label: 'Carta u (difetti per unita variabile)' },
+    { value: 'c', label: 'Carta c (difetti per unità costante)' },
+    { value: 'u', label: 'Carta u (difetti per unità variabile)' },
     { value: 'p-laney', label: "Carta p' di Laney (sovradispersione)" },
     { value: 'u-laney', label: "Carta u' di Laney (sovradispersione)" }
   ];
@@ -29,7 +29,7 @@
     label: 'Carte di controllo',
     icon: '⌇',
     group: 'Six Sigma',
-    desc: 'Carte di controllo per variabili e attributi con gli 8 test di Nelson, stima della sigma di breve termine, fasi del processo e carte ad alta sensibilita.',
+    desc: 'Carte di controllo per variabili e attributi con gli 8 test di Nelson, stima della sigma di breve termine, fasi del processo e carte ad alta sensibilità.',
     render: function (el) {
       var ds = C3.app.ds();
       if (!ds || !ds.nrows) {
@@ -53,6 +53,7 @@
         { id: 'chart', type: 'select', label: 'Tipo di carta', options: CHARTS },
         {
           id: 'value', type: 'select', label: 'Variabile misurata', options: numCols,
+          value: C3.app.guessMeasure(ds) || numCols[0],
           when: function (v) { return ['p', 'np', 'c', 'u', 'p-laney', 'u-laney'].indexOf(v.chart) < 0; }
         },
         {
@@ -60,7 +61,7 @@
           when: function (v) { return ['p', 'np', 'c', 'u', 'p-laney', 'u-laney'].indexOf(v.chart) >= 0; }
         },
         {
-          id: 'sizes', type: 'select', label: 'Colonna della numerosita ispezionata',
+          id: 'sizes', type: 'select', label: 'Colonna della numerosità ispezionata',
           options: [{ value: '', label: '(costante = 1)' }].concat(numCols),
           when: function (v) { return ['p', 'np', 'u', 'p-laney', 'u-laney'].indexOf(v.chart) >= 0; }
         },
@@ -71,7 +72,8 @@
           ], when: function (v) { return ['i-mr', 'xbar-r', 'xbar-s', 'auto', 'ewma', 'cusum', 'ma'].indexOf(v.chart) >= 0; }
         },
         {
-          id: 'size', type: 'number', label: 'Dimensione del sottogruppo', value: 1, min: 1, max: 25,
+          id: 'size', type: 'number', label: 'Dimensione del sottogruppo',
+          value: (ds.meta && ds.meta.subgroupSize) || 1, min: 1, max: 25,
           when: function (v) { return v.subMode === 'size' && ['p', 'np', 'c', 'u', 'p-laney', 'u-laney', 'z-mr'].indexOf(v.chart) < 0; }
         },
         {
@@ -166,7 +168,7 @@
           }, chartBox));
           C3.plots.controlChart(chartBox, chart, {
             yLabel: isAttr ? (v.chart === 'np' ? 'Numero di difettosi'
-              : (v.chart[0] === 'p' ? 'Frazione difettosa' : 'Difetti per unita')) : v.value
+              : (v.chart[0] === 'p' ? 'Frazione difettosa' : 'Difetti per unità')) : v.value
           });
 
           // riepilogo numerico
@@ -226,8 +228,8 @@
           }
           out.appendChild(ui.panel('Dettagli tecnici', null, [
             ui.kv(info),
-            !isAttr ? ui.verdict('La sigma <b>within</b> misura la variabilita di breve termine (entro sottogruppo): ' +
-              'e quella usata per i limiti di controllo e per Cp/Cpk. La variabilita complessiva (overall) include anche ' +
+            !isAttr ? ui.verdict('La sigma <b>within</b> misura la variabilità di breve termine (entro sottogruppo): ' +
+              'e quella usata per i limiti di controllo e per Cp/Cpk. La variabilità complessiva (overall) include anche ' +
               'lo spostamento fra sottogruppi ed e quella percepita dal cliente (Pp/Ppk).', 'good') : null,
             isAttr && chart.overdispersion && chart.overdispersion.ratio > 1.5
               ? ui.verdict('Sovradispersione: con sottogruppi grandi i limiti classici sono troppo stretti e quasi tutti ' +
@@ -236,10 +238,10 @@
 
           // suggerimenti
           out.appendChild(ui.panel('Come leggere la carta', null, h('div', { class: 'doc small' }, [
-            h('p', { html: '<b>Prima la stabilita, poi la capacita.</b> Se il processo non e in controllo, gli indici Cp/Cpk non hanno senso: descrivono un processo che non esiste in modo stabile.' }),
+            h('p', { html: '<b>Prima la stabilità, poi la capacità.</b> Se il processo non è in controllo, gli indici Cp/Cpk non hanno senso: descrivono un processo che non esiste in modo stabile.' }),
             h('ul', null, [
               h('li', { html: '<b>Un punto fuori dai limiti</b> (test 1): cerca una causa speciale in quel momento (cambio lotto, utensile, operatore, regolazione).' }),
-              h('li', { html: '<b>9 punti dallo stesso lato</b> (test 2): la media si e spostata.' }),
+              h('li', { html: '<b>9 punti dallo stesso lato</b> (test 2): la media si è spostata.' }),
               h('li', { html: '<b>6 punti in salita o discesa</b> (test 3): usura, deriva termica, esaurimento di un consumabile.' }),
               h('li', { html: '<b>Molti punti vicini alla linea centrale</b> (test 7): sottogruppi formati male (mescolano flussi diversi) o limiti calcolati su dati troppo dispersi.' }),
               h('li', { html: '<b>Non ricalcolare i limiti dopo ogni intervento</b>: usa le fasi per documentare i cambiamenti voluti.' })

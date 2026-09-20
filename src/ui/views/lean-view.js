@@ -30,10 +30,10 @@
   function principi(el) {
     el.appendChild(ui.panel('I cinque principi del pensiero snello', { sub: 'Womack e Jones' },
       h('div', { class: 'steps' }, [
-        ['Definisci il valore', 'Il valore lo stabilisce il cliente, non chi produce. Tutto cio che il cliente non e disposto a pagare e spreco o, al massimo, necessario ma non a valore.'],
-        ['Mappa il flusso di valore', 'Segui il prodotto (o la pratica) dall inizio alla fine e distingui: attivita a valore, attivita necessarie ma senza valore, spreco puro. Di solito il tempo a valore e sotto il 5% del lead time.'],
+        ['Definisci il valore', 'Il valore lo stabilisce il cliente, non chi produce. Tutto ciò che il cliente non è disposto a pagare e spreco o, al massimo, necessario ma non a valore.'],
+        ['Mappa il flusso di valore', 'Segui il prodotto (o la pratica) dall’inizio alla fine e distingui: attività a valore, attività necessarie ma senza valore, spreco puro. Di solito il tempo a valore è sotto il 5% del lead time.'],
         ['Crea il flusso', 'Elimina code, lotti e attese: il pezzo deve muoversi senza fermarsi. Il flusso a pezzo singolo espone subito i problemi invece di nasconderli nelle scorte.'],
-        ['Fai tirare il cliente (pull)', 'Non produrre finche la fase a valle non lo chiede. Il kanban e il segnale che autorizza a produrre.'],
+        ['Fai tirare il cliente (pull)', 'Non produrre finché la fase a valle non lo chiede. Il kanban e il segnale che autorizza a produrre.'],
         ['Cerca la perfezione', 'Miglioramento continuo: ogni ciclo riduce gli sprechi e mette in luce quelli successivi, prima invisibili.']
       ].map(function (s) {
         return h('div', { class: 'step' }, [h('h4', { text: s[0] }), h('p', { text: s[1] })]);
@@ -52,18 +52,18 @@
 
     el.appendChild(ui.panel('Lean e Six Sigma: due leve diverse', null,
       h('div', { class: 'doc' }, [
-        h('p', { html: 'Il <b>Lean</b> attacca il <b>tempo</b>: elimina attivita che non aggiungono valore, riduce il lead time, fa scorrere il flusso. ' +
-          'Il <b>Six Sigma</b> attacca la <b>variabilita</b>: riduce la dispersione e i difetti con metodi statistici.' }),
+        h('p', { html: 'Il <b>Lean</b> attacca il <b>tempo</b>: elimina attività che non aggiungono valore, riduce il lead time, fa scorrere il flusso. ' +
+          'Il <b>Six Sigma</b> attacca la <b>variabilità</b>: riduce la dispersione e i difetti con metodi statistici.' }),
         h('p', { html: 'Non sono alternativi. Un processo veloce ma instabile produce difetti in fretta; un processo preciso ma lento non serve il cliente. ' +
-          'La regola pratica e: <b>prima semplifica il flusso</b> (Lean), poi riduci la variabilita di cio che resta (Six Sigma). ' +
-          'Semplificare un processo che poi verra eliminato e il classico spreco di analisi.' }),
+          'La regola pratica è: <b>prima semplifica il flusso</b> (Lean), poi riduci la variabilità di ciò che resta (Six Sigma). ' +
+          'Semplificare un processo che poi verrà eliminato e il classico spreco di analisi.' }),
         h('table', { class: 'data' }, [
           h('thead', null, h('tr', null, [h('th', null, 'Domanda'), h('th', null, 'Strumento tipico')])),
           h('tbody', null, [
             ['Il processo e lento e pieno di attese?', 'Value stream map, flusso continuo, SMED, kanban'],
-            ['I difetti sono tanti e variabili?', 'Carte di controllo, capacita, DoE, MSA'],
-            ['Le cause sono ignote?', 'Ishikawa, 5 perche, analisi multi-vari, test di ipotesi'],
-            ['Serve trovare le impostazioni ottimali?', 'DoE fattoriale, superficie di risposta, desiderabilita'],
+            ['I difetti sono tanti e variabili?', 'Carte di controllo, capacità, DoE, MSA'],
+            ['Le cause sono ignote?', 'Ishikawa, 5 perché, analisi multi-vari, test di ipotesi'],
+            ['Serve trovare le impostazioni ottimali?', 'DoE fattoriale, superficie di risposta, desiderabilità'],
             ['Il risultato regge nel tempo?', 'Control plan, carte di controllo, standard work, audit'],
             ['Le macchine si fermano spesso?', 'OEE, TPM, manutenzione autonoma, analisi delle perdite']
           ].map(function (r) {
@@ -83,15 +83,15 @@
         kpi: 'Tempo di ricerca attrezzi, punteggio audit 5S'
       },
       {
-        name: 'Standard work', tag: 'stabilita',
+        name: 'Standard work', tag: 'stabilità',
         desc: 'La sequenza migliore nota, documentata e usata da tutti: tempo ciclo, sequenza delle operazioni, WIP standard.',
-        how: ['Osserva e cronometra piu cicli', 'Scegli la sequenza migliore, non la media', 'Rendi visibile il foglio di lavoro standard', 'Aggiornalo a ogni kaizen'],
-        kpi: 'Variabilita del tempo ciclo fra operatori'
+        how: ['Osserva e cronometra più cicli', 'Scegli la sequenza migliore, non la media', 'Rendi visibile il foglio di lavoro standard', 'Aggiornalo a ogni kaizen'],
+        kpi: 'Variabilità del tempo ciclo fra operatori'
       },
       {
-        name: 'SMED', tag: 'flessibilita',
-        desc: 'Riduzione dei tempi di cambio (single minute exchange of die): separare attivita interne ed esterne, convertirle, snellirle.',
-        how: ['Filma il cambio completo', 'Classifica ogni attivita interna/esterna', 'Prepara tutto prima di fermare la macchina', 'Attacchi rapidi, riferimenti, nessuna regolazione'],
+        name: 'SMED', tag: 'flessibilità',
+        desc: 'Riduzione dei tempi di cambio (single minute exchange of die): separare attività interne ed esterne, convertirle, snellirle.',
+        how: ['Filma il cambio completo', 'Classifica ogni attività interna/esterna', 'Prepara tutto prima di fermare la macchina', 'Attacchi rapidi, riferimenti, nessuna regolazione'],
         kpi: 'Tempo di cambio, numero di cambi al giorno, dimensione del lotto'
       },
       {
@@ -104,17 +104,17 @@
         name: 'Heijunka', tag: 'livellamento',
         desc: 'Livellare volume e mix: produrre ogni giorno un po di tutto invece di grandi lotti alternati.',
         how: ['Heijunka box con sequenza ripetitiva', 'Ridurre i tempi di cambio per rendere sostenibili lotti piccoli', 'Stabilire un ritmo (pitch) di prelievo'],
-        kpi: 'EPEI, variabilita della domanda a valle'
+        kpi: 'EPEI, variabilità della domanda a valle'
       },
       {
-        name: 'TPM e OEE', tag: 'affidabilita',
-        desc: 'Manutenzione produttiva totale: l operatore cura la macchina, le perdite si misurano con OEE.',
+        name: 'TPM e OEE', tag: 'affidabilità',
+        desc: 'Manutenzione produttiva totale: l’operatore cura la macchina, le perdite si misurano con OEE.',
         how: ['Pulizia iniziale e ripristino delle condizioni base', 'Manutenzione autonoma quotidiana', 'Analisi delle sei grandi perdite', 'Manutenzione pianificata su dati'],
         kpi: 'OEE, MTBF, MTTR, fermate non pianificate'
       },
       {
-        name: 'Poka-yoke', tag: 'qualita',
-        desc: 'Dispositivi che rendono impossibile l errore o lo segnalano subito.',
+        name: 'Poka-yoke', tag: 'qualità',
+        desc: 'Dispositivi che rendono impossibile l’errore o lo segnalano subito.',
         how: ['Analizza i modi di errore umano', 'Preferisci il controllo di prevenzione a quello di rilevazione', 'Sensori, sagome, conteggi automatici, sequenze obbligate'],
         kpi: 'Difetti sfuggiti, tasso di errore umano'
       },
@@ -131,7 +131,7 @@
         kpi: 'Tempo di reazione alle anomalie'
       },
       {
-        name: 'Jidoka', tag: 'qualita',
+        name: 'Jidoka', tag: 'qualità',
         desc: 'Automazione con intelligenza umana: la macchina si ferma da sola quando rileva un anomalia, il difetto non prosegue.',
         how: ['Rilevazione automatica delle condizioni anomale', 'Fermata e segnalazione', 'Analisi della causa prima di ripartire'],
         kpi: 'Difetti passati alla fase successiva'
@@ -148,18 +148,18 @@
         ]);
       }))));
 
-    el.appendChild(ui.panel('Le sei grandi perdite (base dell OEE)', null,
+    el.appendChild(ui.panel('Le sei grandi perdite (base dell’OEE)', null,
       ui.table([
         { key: 'loss', label: 'Perdita' },
         { key: 'component', label: 'Componente OEE' },
         { key: 'action', label: 'Contromisura tipica' }
       ], [
-        { loss: 'Guasti e fermate lunghe', component: 'Disponibilita', action: 'TPM, manutenzione pianificata, analisi delle cause' },
-        { loss: 'Setup e regolazioni', component: 'Disponibilita', action: 'SMED, attacchi rapidi, standard di cambio' },
+        { loss: 'Guasti e fermate lunghe', component: 'Disponibilità', action: 'TPM, manutenzione pianificata, analisi delle cause' },
+        { loss: 'Setup e regolazioni', component: 'Disponibilità', action: 'SMED, attacchi rapidi, standard di cambio' },
         { loss: 'Micro-fermate', component: 'Prestazione', action: 'Osservazione diretta, eliminazione degli inceppamenti' },
-        { loss: 'Velocita ridotta', component: 'Prestazione', action: 'Ripristino delle condizioni base, parametri corretti' },
-        { loss: 'Scarti di avviamento', component: 'Qualita', action: 'Standardizzazione dell avvio, primo pezzo buono' },
-        { loss: 'Difetti in produzione', component: 'Qualita', action: 'SPC, poka-yoke, DoE sui parametri critici' }
+        { loss: 'Velocità ridotta', component: 'Prestazione', action: 'Ripristino delle condizioni base, parametri corretti' },
+        { loss: 'Scarti di avviamento', component: 'Qualità', action: 'Standardizzazione dell’avvio, primo pezzo buono' },
+        { loss: 'Difetti in produzione', component: 'Qualità', action: 'SPC, poka-yoke, DoE sui parametri critici' }
       ])));
   }
 
@@ -215,26 +215,26 @@
         });
         ui.clear(out);
         out.appendChild(ui.kv([
-          ['Disponibilita', num.fmt(100 * r.availability, 2) + '%'],
+          ['Disponibilità', num.fmt(100 * r.availability, 2) + '%'],
           ['Prestazione', num.fmt(100 * r.performance, 2) + '%'],
-          ['Qualita', num.fmt(100 * r.quality, 2) + '%'],
+          ['Qualità', num.fmt(100 * r.quality, 2) + '%'],
           ['<b>OEE</b>', '<b>' + num.fmt(100 * r.oee, 2) + '%</b>'],
           ['Pezzi buoni', r.goodCount],
           ['Perdita per fermate', num.fmt(r.losses.availabilityLossMin, 1) + ' min'],
-          ['Perdita per velocita', r.losses.performanceLossMin != null ? num.fmt(r.losses.performanceLossMin, 1) + ' min' : '-'],
-          ['Perdita per qualita', r.losses.qualityLossMin != null ? num.fmt(r.losses.qualityLossMin, 1) + ' min' : '-']
+          ['Perdita per velocità', r.losses.performanceLossMin != null ? num.fmt(r.losses.performanceLossMin, 1) + ' min' : '-'],
+          ['Perdita per qualità', r.losses.qualityLossMin != null ? num.fmt(r.losses.qualityLossMin, 1) + ' min' : '-']
         ]));
         out.appendChild(ui.verdict('Livello: ' + r.benchmark, r.oee >= 0.85 ? 'good' : (r.oee >= 0.6 ? 'warn' : 'bad')));
         var box = h('div');
         out.appendChild(box);
         C3.plots.barChart(box, [
-          { label: 'Disponibilita', value: 100 * r.availability },
+          { label: 'Disponibilità', value: 100 * r.availability },
           { label: 'Prestazione', value: 100 * r.performance },
-          { label: 'Qualita', value: 100 * r.quality },
+          { label: 'Qualità', value: 100 * r.quality },
           { label: 'OEE', value: 100 * r.oee }
-        ], { valueLabel: '%', valueLabels: true, height: 230, title: 'Componenti dell OEE' });
+        ], { valueLabel: '%', valueLabels: true, height: 230, title: 'Componenti dell’OEE' });
       }
-      grid.appendChild(ui.panel('OEE', { sub: 'efficacia complessiva dell impianto' }, [f.el, out]));
+      grid.appendChild(ui.panel('OEE', { sub: 'efficacia complessiva dell’impianto' }, [f.el, out]));
       calc();
     })();
 
@@ -266,7 +266,7 @@
       var f = ui.form([
         { id: 'demand', type: 'number', label: 'Consumo (pezzi/ora)', value: 40 },
         { id: 'lead', type: 'number', label: 'Lead time di ripristino (ore)', value: 2, step: 0.1 },
-        { id: 'container', type: 'number', label: 'Capacita del contenitore', value: 20 },
+        { id: 'container', type: 'number', label: 'Capacità del contenitore', value: 20 },
         { id: 'safety', type: 'number', label: 'Fattore di sicurezza', value: 0.2, step: 0.05 }
       ], calc);
       function calc() {
@@ -292,9 +292,9 @@
     (function () {
       var out = h('div');
       var f = ui.form([
-        { id: 'internal', type: 'number', label: 'Tempo attivita interne (minuti)', value: 45 },
-        { id: 'external', type: 'number', label: 'Tempo attivita esterne (minuti)', value: 15 },
-        { id: 'convert', type: 'number', label: 'Attivita interne convertibili in esterne (minuti)', value: 18 },
+        { id: 'internal', type: 'number', label: 'Tempo attività interne (minuti)', value: 45 },
+        { id: 'external', type: 'number', label: 'Tempo attività esterne (minuti)', value: 15 },
+        { id: 'convert', type: 'number', label: 'Attività interne convertibili in esterne (minuti)', value: 18 },
         { id: 'reduce', type: 'number', label: 'Riduzione ottenibile sulle interne rimaste (minuti)', value: 8 },
         { id: 'perDay', type: 'number', label: 'Cambi al giorno', value: 3 }
       ], calc);
@@ -327,7 +327,7 @@
           id: 'times', type: 'textarea', label: 'Tempi delle operazioni (uno per riga o separati da virgola)',
           rows: 4, value: '25, 18, 32, 27, 15, 21, 30'
         },
-        { id: 'takt', type: 'number', label: 'Takt time (stesse unita)', value: 60 }
+        { id: 'takt', type: 'number', label: 'Takt time (stesse unità)', value: 60 }
       ], calc);
       function calc() {
         var v = f.values();
@@ -388,7 +388,7 @@
         ]));
         out.appendChild(ui.verdict(r.feasible
           ? r.note
-          : 'Il tempo disponibile non copre nemmeno la produzione: serve capacita aggiuntiva o meno domanda.',
+          : 'Il tempo disponibile non copre nemmeno la produzione: serve capacità aggiuntiva o meno domanda.',
           r.feasible ? 'good' : 'bad'));
       }
       grid.appendChild(ui.panel('EPEI', { sub: 'ogni codice ogni quanto' }, [f.el, out]));
@@ -436,7 +436,7 @@
       }
     ], calc);
     el.appendChild(ui.panel('Mappa del flusso di valore', {
-      sub: 'inserisci le fasi con i tempi: il calcolo distingue valore, non valore e attese'
+      sub: 'inserisci le fasi con i tempi: il calcolo distingue valore, non valore è attese'
     }, [f.el, out]));
 
     function calc() {
@@ -472,8 +472,8 @@
         ['Collo di bottiglia', r.bottleneck ? r.bottleneck.name + ' (' + num.fmt(r.bottleneck.processTime, 1) + ')' : '-']
       ]));
       out.appendChild(ui.verdict(r.note + ' Con PCE = ' + num.fmt(r.pce, 1) + '% il ' +
-        num.fmt(100 - r.pce, 1) + '% del tempo il prodotto sta fermo: e li che si trova il margine piu grande, ' +
-        'non nella velocita delle macchine.', r.pce > 25 ? 'good' : 'warn'));
+        num.fmt(100 - r.pce, 1) + '% del tempo il prodotto sta fermo: e li che si trova il margine più grande, ' +
+        'non nella velocità delle macchine.', r.pce > 25 ? 'good' : 'warn'));
       var box = h('div');
       out.appendChild(box);
       C3.chart.render(box, {
@@ -524,11 +524,11 @@
       h('div', { class: 'timeline' }, [
         ['Scegli un flusso, non tutta la fabbrica', 'Un prodotto o una famiglia con volumi significativi e problemi evidenti. Il perimetro deve essere percorribile a piedi in un giorno.'],
         ['Vai al gemba e misura', 'Cronometra, conta il WIP, misura le attese. Non fidarti dei tempi a sistema: quasi sempre sono tempi standard, non tempi reali.'],
-        ['Disegna lo stato attuale', 'Value stream map con tempi di processo, attese, scorte, qualita. Calcola il lead time e il PCE.'],
-        ['Stabilizza prima di ottimizzare', '5S, standard work, manutenzione di base. Un processo instabile non si puo migliorare: i risultati non sarebbero ripetibili.'],
+        ['Disegna lo stato attuale', 'Value stream map con tempi di processo, attese, scorte, qualità. Calcola il lead time e il PCE.'],
+        ['Stabilizza prima di ottimizzare', '5S, standard work, manutenzione di base. Un processo instabile non si può migliorare: i risultati non sarebbero ripetibili.'],
         ['Crea il flusso', 'Riduci i lotti (SMED), avvicina le fasi, bilancia sul takt time, elimina i controlli ridondanti.'],
-        ['Introduci il pull', 'Kanban e supermarket dove il flusso continuo non e possibile. Riduci progressivamente i cartellini.'],
-        ['Livella', 'Heijunka: mix ripetitivo, ritmo costante. Serve che i tempi di cambio siano gia bassi.'],
+        ['Introduci il pull', 'Kanban e supermarket dove il flusso continuo non è possibile. Riduci progressivamente i cartellini.'],
+        ['Livella', 'Heijunka: mix ripetitivo, ritmo costante. Serve che i tempi di cambio siano già bassi.'],
         ['Consolida e ripeti', 'Standard aggiornati, indicatori a vista, audit. Poi scegli il flusso successivo.']
       ].map(function (p) {
         return h('div', { class: 'phase' }, [h('h3', { text: p[0] }), h('p', { text: p[1] })]);
@@ -536,11 +536,11 @@
 
     el.appendChild(ui.panel('Errori frequenti', null,
       h('div', { class: 'doc' }, h('ul', null, [
-        'Applicare gli strumenti come obiettivo: il 5S fatto per il punteggio dell audit non produce alcun risultato economico.',
-        'Ottimizzare una fase isolata: se non e il collo di bottiglia, il lead time complessivo non cambia.',
-        'Ridurre il WIP senza ridurre la variabilita: le rotture di flusso aumentano e la produzione si ferma.',
-        'Dimenticare la manutenzione: un flusso teso senza affidabilita si blocca al primo guasto.',
-        'Misurare solo l efficienza delle macchine: spinge alla sovrapproduzione, il peggiore degli sprechi.',
+        'Applicare gli strumenti come obiettivo: il 5S fatto per il punteggio dell’audit non produce alcun risultato economico.',
+        'Ottimizzare una fase isolata: se non è il collo di bottiglia, il lead time complessivo non cambia.',
+        'Ridurre il WIP senza ridurre la variabilità: le rotture di flusso aumentano e la produzione si ferma.',
+        'Dimenticare la manutenzione: un flusso teso senza affidabilità si blocca al primo guasto.',
+        'Misurare solo l’efficienza delle macchine: spinge alla sovrapproduzione, il peggiore degli sprechi.',
         'Non coinvolgere chi fa il lavoro: gli standard scritti a tavolino non vengono seguiti.',
         'Chiudere il progetto senza control plan: in pochi mesi il processo torna come prima.'
       ].map(function (x) { return h('li', { text: x }); })))));

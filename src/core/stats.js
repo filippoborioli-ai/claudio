@@ -1,5 +1,5 @@
 /* CLAUDIO v3 - core/stats.js
- * Statistica descrittiva, quantili, ranghi, normalita (AD, Shapiro-Wilk, Ryan-Joiner),
+ * Statistica descrittiva, quantili, ranghi, normalità (AD, Shapiro-Wilk, Ryan-Joiner),
  * istogrammi, KDE, trasformazioni (Box-Cox, Johnson SU/SB semplificata), outlier, bootstrap.
  */
 ;(function (root, name, deps, factory) {
@@ -229,7 +229,7 @@
     return (conc - disc) / Math.sqrt((conc + disc + tx) * (conc + disc + ty));
   }
 
-  /* --------------------- test di normalita --------------------- */
+  /* --------------------- test di normalità --------------------- */
   /** Anderson-Darling per normale con parametri stimati + p-value. */
   function andersonDarling(xin) {
     var x = sortAsc(clean(xin)), n = x.length;
@@ -391,7 +391,7 @@
     return { bins: bins, width: w, n: n, lo: lo, hi: hi };
   }
 
-  /** Stima di densita kernel gaussiano, banda di Silverman. */
+  /** Stima di densità kernel gaussiano, banda di Silverman. */
   function kde(xin, opts) {
     opts = opts || {};
     var x = clean(xin), n = x.length;

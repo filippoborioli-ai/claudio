@@ -1,7 +1,7 @@
 /* CLAUDIO v3 - ui/views/doe-analyze-view.js
  * Analisi degli esperimenti: fattoriali a 2 livelli, superficie di risposta,
  * miscele, Taguchi (S/N), riduzione del modello, ottimizzazione multi-risposta
- * con desiderabilita e prove di conferma.
+ * con desiderabilità e prove di conferma.
  */
 ;(function (root) {
   'use strict';
@@ -19,7 +19,7 @@
     render: function (el) {
       var ds = C3.app.ds();
       if (!ds || !ds.nrows) {
-        el.appendChild(ui.empty('Nessun dato', 'Crea un piano sperimentale o carica i dati di un esperimento gia svolto.'));
+        el.appendChild(ui.empty('Nessun dato', 'Crea un piano sperimentale o carica i dati di un esperimento già svolto.'));
         return;
       }
       var numCols = ds.numericColumns(), allCols = ds.names;
@@ -41,9 +41,19 @@
       var guessResponse = meta.response && ds.column(meta.response) ? meta.response
         : (numCols.filter(function (c) { return guessFactors.indexOf(c) < 0; })[0] || numCols[0]);
 
+      // riconosce il tipo di disegno: 3+ livelli per fattore o CCD/Box-Behnken -> superficie di risposta
+      var guessMode = (function () {
+        if ((meta.components || []).length >= 2) return 'mixture';
+        var design = String(meta.design || '');
+        if (/Composite|Box-Behnken|superficie/i.test(design)) return 'rsm';
+        if (/Taguchi/i.test(design)) return 'taguchi';
+        var manyLevels = guessFactors.filter(function (fc) { return ds.levels(fc).length >= 3; }).length;
+        return (guessFactors.length && manyLevels >= Math.min(2, guessFactors.length)) ? 'rsm' : 'factorial';
+      })();
+
       var f = ui.form([
         {
-          id: 'mode', type: 'chips', label: 'Tipo di analisi', value: 'factorial', options: [
+          id: 'mode', type: 'chips', label: 'Tipo di analisi', value: guessMode, options: [
             { value: 'factorial', label: 'Fattoriale' },
             { value: 'rsm', label: 'Superficie di risposta' },
             { value: 'mixture', label: 'Miscele' },
@@ -80,9 +90,9 @@
         },
         {
           id: 'snType', type: 'select', label: 'Rapporto S/N', options: [
-            { value: 'larger', label: 'Piu grande e meglio' },
-            { value: 'smaller', label: 'Piu piccolo e meglio' },
-            { value: 'nominal', label: 'Valore nominale e meglio' }
+            { value: 'larger', label: 'Più grande è meglio' },
+            { value: 'smaller', label: 'Più piccolo è meglio' },
+            { value: 'nominal', label: 'Valore nominale è meglio' }
           ], when: function (v) { return v.mode === 'taguchi'; }
         },
         {
@@ -201,14 +211,14 @@
 
         if (a.droppedTerms && a.droppedTerms.length) {
           out.appendChild(ui.verdict('Il disegno ha ' + a.nRuns + ' prove: non bastano per stimare tutti i termini richiesti. ' +
-            'Sono stati rimossi automaticamente i termini di ordine piu alto (' + a.droppedTerms.length +
+            'Sono stati rimossi automaticamente i termini di ordine più alto (' + a.droppedTerms.length +
             '), a partire da ' + a.droppedTerms.slice(0, 4).join(', ') + '. ' +
-            'Con un disegno saturo gli effetti restano confusi con le interazioni: e normale nello screening.', 'warn'));
+            'Con un disegno saturo gli effetti restano confusi con le interazioni: è normale nello screening.', 'warn'));
         }
 
         // effetti
         out.appendChild(ui.panel('Effetti stimati', {
-          sub: a.lenth ? 'nessun grado di liberta per l errore: metodo di Lenth (PSE = ' + num.fmt(a.lenth.pse, 5) + ')'
+          sub: a.lenth ? 'nessun grado di liberta per l’errore: metodo di Lenth (PSE = ' + num.fmt(a.lenth.pse, 5) + ')'
             : 'S = ' + num.fmt(a.s, 5) + ', R2 = ' + num.fmt(100 * a.r2, 2) + '%'
         }, [
           ui.table([
@@ -234,8 +244,8 @@
             a.lenth ? ['Margine simultaneo (SME)', a.lenth.sme, 5] : null
           ].filter(Boolean)),
           ui.verdict('L <b>effetto</b> e la variazione della risposta passando dal livello basso a quello alto: ' +
-            'vale il doppio del coefficiente del modello in unita codificate.', 'good'),
-          ui.verdict('Equazione in unita codificate: <span class="mono">' + a.equation + '</span>', 'good')
+            'vale il doppio del coefficiente del modello in unità codificate.', 'good'),
+          ui.verdict('Equazione in unità codificate: <span class="mono">' + a.equation + '</span>', 'good')
         ]));
 
         // ANOVA
@@ -369,7 +379,7 @@
             ms: model.lackOfFit.lofSS / model.lackOfFit.lofDF, F: model.lackOfFit.F, p: model.lackOfFit.p
           });
         }
-        out.appendChild(ui.panel('Modello quadratico', { sub: 'unita codificate (-1 = livello basso, +1 = livello alto)' }, [
+        out.appendChild(ui.panel('Modello quadratico', { sub: 'unità codificate (-1 = livello basso, +1 = livello alto)' }, [
           ui.coefTable(model.fit, { alpha: alpha() }),
           ui.anovaTable(anovaRows, { alpha: alpha() }),
           ui.kv([
@@ -400,11 +410,11 @@
               ['Autovalori', s.eigenvalues.map(function (x) { return num.fmt(x, 4); }).join(' ; ')]
             ]),
             ui.verdict(s.nature === 'punto di sella'
-              ? 'Il punto stazionario e una <b>sella</b>: non e un massimo ne un minimo. L ottimo si trova sul bordo ' +
-                'della regione sperimentale; usa l ottimizzazione con vincoli o esplora lungo la direzione di massima pendenza.'
+              ? 'Il punto stazionario e una <b>sella</b>: non è un massimo ne un minimo. L’ottimo si trova sul bordo ' +
+                'della regione sperimentale; usa l’ottimizzazione con vincoli o esplora lungo la direzione di massima pendenza.'
               : (s.coded.some(function (x) { return Math.abs(x) > 1.5; })
                 ? 'Il punto stazionario cade <b>fuori dalla regione esplorata</b>: la previsione e un estrapolazione. ' +
-                  'Sposta l esperimento verso quella direzione e ripeti.'
+                  'Sposta l’esperimento verso quella direzione e ripeti.'
                 : 'Il punto stazionario e un <b>' + s.nature + '</b> interno alla regione: e la condizione ottimale stimata.'),
               s.nature === 'punto di sella' ? 'warn' : 'good')
           ]));
@@ -564,8 +574,8 @@
               { key: 'sd', label: 'Dev.st.', digits: 4 },
               { key: 'sn', label: 'S/N (dB)', digits: 4 }
             ]), rows),
-          ui.verdict('Il rapporto S/N si <b>massimizza sempre</b>, qualunque sia l obiettivo: ' +
-            'e costruito in modo che valori piu alti indichino un processo piu robusto al rumore.', 'good')
+          ui.verdict('Il rapporto S/N si <b>massimizza sempre</b>, qualunque sia l’obiettivo: ' +
+            'e costruito in modo che valori più alti indichino un processo più robusto al rumore.', 'good')
         ]));
         // effetti su S/N e su media
         var snData = {};
@@ -614,14 +624,14 @@
           });
         });
         out.appendChild(ui.verdict('Approccio in due passi di Taguchi: <b>1)</b> scegli i livelli dei fattori che ' +
-          'massimizzano S/N (riducono la sensibilita al rumore); <b>2)</b> usa un fattore che influenza solo la media ' +
+          'massimizzano S/N (riducono la sensibilità al rumore); <b>2)</b> usa un fattore che influenza solo la media ' +
           '(fattore di regolazione) per centrare la risposta sul target.', 'good'));
       }
 
       function tipoSN(t) {
-        return t === 'larger' ? 'piu grande e meglio: -10 log(media di 1/y^2)'
+        return t === 'larger' ? 'più grande è meglio: -10 log(media di 1/y^2)'
           : (t === 'nominal' ? 'valore nominale: 10 log(media^2 / varianza)'
-            : 'piu piccolo e meglio: -10 log(media di y^2)');
+            : 'più piccolo è meglio: -10 log(media di y^2)');
       }
 
       function optimize(v) {
@@ -640,7 +650,7 @@
           models: models,
           bounds: v.factors.map(function () { return [-1, 1]; })
         });
-        out.appendChild(ui.panel('Ottimizzazione multi-risposta', { sub: 'desiderabilita di Derringer-Suich' }, [
+        out.appendChild(ui.panel('Ottimizzazione multi-risposta', { sub: 'desiderabilità di Derringer-Suich' }, [
           ui.table([
             { key: 'factor', label: 'Fattore' },
             { key: 'coded', label: 'Valore codificato', digits: 4 },
@@ -654,22 +664,22 @@
             { key: 'fit', label: 'Valore previsto', digits: 5 },
             { key: function (r) { return num.fmt(r.ci[0], 4) + ' ... ' + num.fmt(r.ci[1], 4); }, label: 'IC della media' },
             { key: function (r) { return num.fmt(r.pi[0], 4) + ' ... ' + num.fmt(r.pi[1], 4); }, label: 'Intervallo di predizione' },
-            { key: 'd', label: 'Desiderabilita', digits: 4 }
+            { key: 'd', label: 'Desiderabilità', digits: 4 }
           ], res.responses),
-          ui.kv([['Desiderabilita composita D', res.D, 4]]),
+          ui.kv([['Desiderabilità composita D', res.D, 4]]),
           ui.verdict(res.D > 0.8
             ? 'Soluzione buona: tutte le risposte sono vicine ai valori desiderati.'
             : (res.D > 0.5
-              ? 'Compromesso accettabile: qualche risposta resta lontana dall ideale. Valuta di allargare i limiti o cambiare le importanze.'
-              : 'Nessuna combinazione soddisfa bene tutti gli obiettivi: gli obiettivi sono in conflitto o la regione esplorata e sbagliata.'),
+              ? 'Compromesso accettabile: qualche risposta resta lontana dall’ideale. Valuta di allargare i limiti o cambiare le importanze.'
+              : 'Nessuna combinazione soddisfa bene tutti gli obiettivi: gli obiettivi sono in conflitto o la regione esplorata è sbagliata.'),
             res.D > 0.8 ? 'good' : (res.D > 0.5 ? 'warn' : 'bad')),
-          ui.verdict('La desiderabilita trasforma ogni risposta in un punteggio da 0 (inaccettabile) a 1 (ideale) ' +
-            'e ne fa la media geometrica: basta una risposta a 0 perche D diventi 0. ' +
-            'Concludi con una <b>prova di conferma</b> alle condizioni trovate e verifica che il risultato cada nell intervallo di predizione.', 'good')
+          ui.verdict('La desiderabilità trasforma ogni risposta in un punteggio da 0 (inaccettabile) a 1 (ideale) ' +
+            'e ne fa la media geometrica: basta una risposta a 0 perché D diventi 0. ' +
+            'Concludi con una <b>prova di conferma</b> alle condizioni trovate e verifica che il risultato cada nell’intervallo di predizione.', 'good')
         ]));
         if (v.factors.length >= 2) {
           var box = h('div', { class: 'c3-grid-2' });
-          out.appendChild(ui.panel('Contour delle risposte all ottimo', null, box));
+          out.appendChild(ui.panel('Contour delle risposte all’ottimo', null, box));
           models.forEach(function (m) {
             var c = h('div');
             box.appendChild(c);

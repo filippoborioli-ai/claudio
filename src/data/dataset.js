@@ -299,7 +299,7 @@
     },
 
     /* ---------- trasformazioni ---------- */
-    /** Impila piu colonne in una coppia valore/gruppo. */
+    /** Impila più colonne in una coppia valore/gruppo. */
     stack: function (colNames, valueName, groupName, name) {
       var d = new Dataset(name || (this.name + ' (impilato)'));
       var values = [], groups = [], self = this;
@@ -319,7 +319,7 @@
       otherCols.forEach(function (n) { d.addColumn(n, carried[n]); });
       return d;
     },
-    /** Separa una colonna valore in piu colonne secondo un gruppo. */
+    /** Separa una colonna valore in più colonne secondo un gruppo. */
     unstack: function (valueCol, groupCol, name) {
       var d = new Dataset(name || (this.name + ' (separato)'));
       var groups = st.groupBy(this.col(valueCol), this.col(groupCol));

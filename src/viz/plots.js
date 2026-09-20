@@ -46,7 +46,7 @@
       subtitle: opts.subtitle || ('n = ' + x.length + '   media = ' + num.fmt(m, 4) + '   dev.st. = ' + num.fmt(s, 4)),
       height: opts.height, aspect: opts.aspect,
       x: { label: opts.xLabel || opts.name || 'Valore' },
-      y: { label: 'Frequenza', includeZero: true },
+      y: { label: 'Frequenza', includeZero: true, min: 0 },
       series: series.map(function (sr) {
         sr.barWidth = Math.max(4, (opts.width || 640) / Math.max(6, h.bins.length) * 0.8);
         return sr;
@@ -166,7 +166,7 @@
       ],
       legend: false,
       note: ad.p != null
-        ? (ad.p < 0.05 ? 'p < 0,05: l ipotesi di normalita viene rifiutata.' : 'p >= 0,05: non si rifiuta la normalita.')
+        ? (ad.p < 0.05 ? 'p < 0,05: l’ipotesi di normalità viene rifiutata.' : 'p >= 0,05: non si rifiuta la normalità.')
         : null
     });
   }
@@ -348,8 +348,10 @@
       var box = document.createElement('div');
       box.className = 'c3-alert';
       box.innerHTML = '<b>Punti fuori controllo</b><ul>' + viol.map(function (v) {
+        var shown = v.points.slice(0, 20).join(', ');
+        var extra = v.points.length > 20 ? ' e altri ' + (v.points.length - 20) : '';
         return '<li><b>' + v.chart + '</b> - test ' + v.test + ': ' + v.label +
-          ' <span class="muted">(punti: ' + v.points.join(', ') + ')</span></li>';
+          ' <span class="muted">(' + v.points.length + ' punti: ' + shown + extra + ')</span></li>';
       }).join('') + '</ul>';
       container.appendChild(box);
     } else {
@@ -391,11 +393,11 @@
     }
     annotations.push({ type: 'curve', points: co, color: ch.seriesColor(1), width: 2, dash: '5 3' });
     return ch.render(target, {
-      title: opts.title || 'Capacita di processo',
+      title: opts.title || 'Capacità di processo',
       subtitle: 'linea continua = within (breve termine), tratteggiata = overall (lungo termine)',
       height: opts.height || 300,
       x: { label: opts.name || 'Valore', domain: [lo, hi] },
-      y: { label: 'Frequenza', includeZero: true },
+      y: { label: 'Frequenza', includeZero: true, min: 0 },
       series: [{
         type: 'bars', name: 'Dati', hideFromLegend: true,
         barWidth: Math.max(4, 560 / Math.max(8, h.bins.length) * 0.82),
@@ -481,7 +483,7 @@
     var pairs = comparisons.pairs;
     return ch.render(target, {
       title: opts.title || ('Confronti multipli - ' + (pairs[0] ? pairs[0].method : '')),
-      subtitle: 'Se l intervallo non contiene lo zero la differenza e significativa',
+      subtitle: 'Se l’intervallo non contiene lo zero la differenza è significativa',
       height: Math.max(180, 60 + pairs.length * 34),
       margin: { left: 110, right: 24, top: 10, bottom: 42 },
       x: { label: 'Differenza fra medie', gridlines: true },
@@ -550,9 +552,9 @@
     });
     // 3. istogramma dei residui
     histogram(cell(), res, { title: 'Istogramma dei residui', name: 'Residuo', height: 240, subtitle: null });
-    // 4. residui nell ordine di osservazione
+    // 4. residui nell’ordine di osservazione
     ch.render(cell(), {
-      title: 'Residui nell ordine di raccolta',
+      title: 'Residui nell’ordine di raccolta',
       height: 240,
       x: { label: 'Ordine di osservazione' },
       y: { label: 'Residuo standardizzato' },
@@ -1133,7 +1135,7 @@
         '   Pa(RQL = ' + num.fmt(100 * plan.rql, 2) + '%) = ' + num.fmt(plan.pAcceptRQL, 3),
       height: opts.height || 300,
       x: { label: 'Frazione difettosa del lotto', gridlines: true },
-      y: { label: 'Probabilita di accettazione', domain: [0, 1.02] },
+      y: { label: 'Probabilità di accettazione', domain: [0, 1.02] },
       series: [{
         type: 'line', name: 'Pa', marker: false, width: 2,
         points: plan.oc.map(function (o) { return { x: o.p, y: o.pAccept }; }),
@@ -1154,7 +1156,8 @@
     var p = ch.pal();
     var div = document.createElement('div');
     div.className = 'c3-kpi';
-    var status = spec.status ? '<span class="c3-kpi-status ' + spec.status + '">' + (spec.statusLabel || '') + '</span>' : '';
+    var status = (spec.status && spec.statusLabel)
+      ? '<span class="c3-kpi-status ' + spec.status + '">' + spec.statusLabel + '</span>' : '';
     div.innerHTML =
       '<div class="c3-kpi-label">' + spec.label + '</div>' +
       '<div class="c3-kpi-value">' + spec.value + (spec.unit ? '<span class="c3-kpi-unit">' + spec.unit + '</span>' : '') + '</div>' +
@@ -1218,7 +1221,7 @@
     return ch.render(target, spec);
   }
 
-  /** Grafico a linee generico (una o piu serie). */
+  /** Grafico a linee generico (una o più serie). */
   function lineChart(target, seriesList, opts) {
     opts = opts || {};
     return ch.render(target, {

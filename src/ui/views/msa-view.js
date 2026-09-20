@@ -1,6 +1,6 @@
 /* CLAUDIO v3 - ui/views/msa-view.js
  * Analisi del sistema di misura: Gage R&R incrociato e annidato,
- * studio di bias e linearita, concordanza per attributi, risoluzione.
+ * studio di bias e linearità, concordanza per attributi, risoluzione.
  */
 ;(function (root) {
   'use strict';
@@ -12,11 +12,11 @@
     label: 'Sistema di misura (MSA)',
     icon: '⚖',
     group: 'Six Sigma',
-    desc: 'Gage R&R con metodo ANOVA e Xbar-R, studio annidato per prove distruttive, bias e linearita, concordanza fra valutatori per dati categorici.',
+    desc: 'Gage R&R con metodo ANOVA e Xbar-R, studio annidato per prove distruttive, bias e linearità, concordanza fra valutatori per dati categorici.',
     render: function (el) {
       var ds = C3.app.ds();
       if (!ds || !ds.nrows) {
-        el.appendChild(ui.empty('Nessun dato', 'Carica un dataset con misure ripetute di piu pezzi e operatori.'));
+        el.appendChild(ui.empty('Nessun dato', 'Carica un dataset con misure ripetute di più pezzi e operatori.'));
         return;
       }
       var numCols = ds.numericColumns(), catCols = ds.categoricalColumns(), allCols = ds.names;
@@ -32,7 +32,7 @@
           id: 'mode', type: 'chips', label: 'Studio', value: 'crossed', options: [
             { value: 'crossed', label: 'Gage R&R incrociato' },
             { value: 'nested', label: 'Annidato (distruttivo)' },
-            { value: 'bias', label: 'Bias e linearita' },
+            { value: 'bias', label: 'Bias e linearità' },
             { value: 'attr', label: 'Attributi (concordanza)' },
             { value: 'res', label: 'Risoluzione' }
           ]
@@ -59,7 +59,7 @@
           hint: '6 = 99,73% (AIAG), 5,15 = 99% (vecchia convenzione)'
         },
         {
-          id: 'alphaPool', type: 'number', label: 'Alpha per escludere l interazione', value: 0.25, step: 0.05,
+          id: 'alphaPool', type: 'number', label: 'Alpha per escludere l’interazione', value: 0.25, step: 0.05,
           when: function (v) { return v.mode === 'crossed'; }
         },
         {
@@ -158,7 +158,8 @@
         });
         C3.plots.kpiTile(kpi, {
           label: '% contributo alla varianza', value: num.fmt(rr.pctContributionRR, 2), unit: '%',
-          status: rr.pctContributionRR < 1 ? 'good' : (rr.pctContributionRR < 9 ? 'warn' : 'bad')
+          status: rr.pctContributionRR < 1 ? 'good' : (rr.pctContributionRR < 9 ? 'warn' : 'bad'),
+          statusLabel: rr.pctContributionRR < 1 ? 'ottimo' : (rr.pctContributionRR < 9 ? 'accettabile' : 'critico')
         });
         C3.plots.kpiTile(kpi, {
           label: '% tolleranza', value: rr.pctToleranceRR != null ? num.fmt(rr.pctToleranceRR, 2) : '-', unit: '%',
@@ -166,7 +167,8 @@
         });
         C3.plots.kpiTile(kpi, {
           label: 'Categorie distinte (ndc)', value: rr.ndc,
-          status: rr.ndc >= 5 ? 'good' : 'bad', sub: 'servono almeno 5'
+          status: rr.ndc >= 5 ? 'good' : 'bad',
+          statusLabel: rr.ndc >= 5 ? 'ok' : 'basso', sub: 'servono almeno 5'
         });
 
         out.appendChild(ui.panel('Tabella ANOVA', {
@@ -177,8 +179,8 @@
           ui.anovaTable(rr.anova.map(function (r) {
             return { source: r.source, df: r.df, ss: r.ss, ms: r.ms, F: r.F, p: r.p };
           }), { alpha: C3.app.state.settings.alpha }),
-          ui.verdict('Procedura standard: se l interazione ha p > ' + v.alphaPool +
-            ' viene eliminata dal modello e la sua varianza confluisce nella ripetibilita.', 'good')
+          ui.verdict('Procedura standard: se l’interazione ha p > ' + v.alphaPool +
+            ' viene eliminata dal modello e la sua varianza confluisce nella ripetibilità.', 'good')
         ]));
 
         out.appendChild(ui.panel('Componenti della variazione', { sub: 'metodo ANOVA' }, [
@@ -186,20 +188,20 @@
           ui.kv([
             ['Pezzi', rr.nParts, 0], ['Operatori', rr.nOperators, 0],
             ['Prove per combinazione', rr.nReplicates, 0], ['Misure totali', rr.n, 0],
-            ['Ripetibilita (EV)', Math.sqrt(rr.varRepeat), 6],
-            ['Riproducibilita (AV)', Math.sqrt(rr.varRepro), 6],
+            ['Ripetibilità (EV)', Math.sqrt(rr.varRepeat), 6],
+            ['Riproducibilità (AV)', Math.sqrt(rr.varRepro), 6],
             ['Variazione pezzo-a-pezzo (PV)', Math.sqrt(rr.varPart), 6]
           ]),
           ui.verdict('<b>' + rr.verdict + '</b>', rr.pctStudyVarRR < 10 ? 'good' : (rr.pctStudyVarRR < 30 ? 'warn' : 'bad')),
-          ui.verdict('Criteri AIAG: %Study Var < 10% accettabile, 10-30% marginale (decidere in base a criticita e costi), ' +
+          ui.verdict('Criteri AIAG: %Study Var < 10% accettabile, 10-30% marginale (decidere in base a criticità e costi), ' +
             '> 30% non accettabile. Il %contributo si giudica su < 1%, 1-9%, > 9%. ' +
-            'Se la ripetibilita domina, il problema e lo strumento; se domina la riproducibilita, il problema e il metodo o la formazione.', 'good')
+            'Se la ripetibilità domina, il problema e lo strumento; se domina la riproducibilità, il problema e il metodo o la formazione.', 'good')
         ]));
 
         out.appendChild(ui.panel('Metodo Xbar-R (confronto)', { sub: 'metodo classico media e range' },
           ui.kv([
-            ['Ripetibilita EV', rr.xbarR.ev, 6],
-            ['Riproducibilita AV', rr.xbarR.av, 6],
+            ['Ripetibilità EV', rr.xbarR.ev, 6],
+            ['Riproducibilità AV', rr.xbarR.av, 6],
             ['Variazione pezzi PV', rr.xbarR.pv, 6],
             ['Gage R&R', rr.xbarR.rr, 6],
             ['Variazione totale TV', rr.xbarR.tv, 6],
@@ -214,7 +216,7 @@
 
         // run chart
         var runBox = h('div');
-        out.appendChild(ui.panel('Gage run chart', { sub: 'tutte le misure nell ordine, per pezzo e operatore' }, runBox));
+        out.appendChild(ui.panel('Gage run chart', { sub: 'tutte le misure nell’ordine, per pezzo e operatore' }, runBox));
         var parts = rr.levelsParts, ops = rr.levelsOperators;
         C3.chart.render(runBox, {
           title: 'Misure per pezzo e operatore',
@@ -255,7 +257,7 @@
             ['Categorie distinte', rr.ndc, 0]
           ]),
           ui.verdict('<b>' + rr.verdict + '</b>', rr.pctStudyVarRR < 10 ? 'good' : (rr.pctStudyVarRR < 30 ? 'warn' : 'bad')),
-          ui.verdict('Lo studio annidato si usa quando la misura <b>distrugge il pezzo</b>: non e possibile ' +
+          ui.verdict('Lo studio annidato si usa quando la misura <b>distrugge il pezzo</b>: non è possibile ' +
             'ripetere la stessa misura, quindi si assume che i pezzi dello stesso lotto siano identici.', 'good')
         ]));
       }
@@ -267,18 +269,18 @@
           tolerance: v.tolerance || null,
           processVar: v.processVar || null
         });
-        out.appendChild(ui.panel('Bias e linearita', { sub: b.n + ' misure' }, [
+        out.appendChild(ui.panel('Bias e linearità', { sub: b.n + ' misure' }, [
           ui.kv([
             ['Bias medio', b.meanBias, 6],
             ['IC del bias', num.fmt(b.ciBias[0], 6) + ' ... ' + num.fmt(b.ciBias[1], 6)],
             ['t del bias', b.t, 4],
             ['p (bias = 0)', num.fmtP(b.p)],
             ['% bias sulla tolleranza', b.pctBiasTolerance != null ? num.fmt(b.pctBiasTolerance, 2) + '%' : '-'],
-            ['Pendenza della linearita', b.linearity.slope, 6],
+            ['Pendenza della linearità', b.linearity.slope, 6],
             ['p (pendenza = 0)', num.fmtP(b.linearity.pSlope)],
             ['Intercetta', b.linearity.intercept, 6],
             ['R-quadro del modello del bias', num.fmt(100 * b.linearity.r2, 2) + '%'],
-            ['Linearita assoluta sul campo di misura', b.linearity.linearityAbs, 6]
+            ['Linearità assoluta sul campo di misura', b.linearity.linearityAbs, 6]
           ]),
           ui.verdict('<b>' + b.verdict + '</b>', (b.p > 0.05 && b.linearity.pSlope > 0.05) ? 'good' : 'warn'),
           ui.table([
@@ -295,7 +297,7 @@
         var g1 = h('div'), g2 = h('div');
         gbox.appendChild(g1); gbox.appendChild(g2);
         C3.plots.scatter(g1, b.points.map(function (p) { return p.reference; }), b.points.map(function (p) { return p.bias; }), {
-          xName: 'Valore di riferimento', yName: 'Bias', title: 'Linearita del bias', showCI: true
+          xName: 'Valore di riferimento', yName: 'Bias', title: 'Linearità del bias', showCI: true
         });
         C3.plots.scatter(g2, b.points.map(function (p) { return p.reference; }), b.points.map(function (p) { return p.measured; }), {
           xName: 'Valore di riferimento', yName: 'Valore misurato', title: 'Misurato vs riferimento', showCI: false
@@ -321,7 +323,7 @@
           }
         }
         var r = msa.attributeAgreement({ data: data, standard: std });
-        out.appendChild(ui.panel('Concordanza entro valutatore', { sub: 'ripetibilita del giudizio' },
+        out.appendChild(ui.panel('Concordanza entro valutatore', { sub: 'ripetibilità del giudizio' },
           ui.table([
             { key: 'appraiser', label: 'Valutatore' },
             { key: 'inspected', label: 'Pezzi', digits: 0 },

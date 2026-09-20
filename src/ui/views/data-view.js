@@ -422,7 +422,7 @@
     // campionamento e pulizia
     (function () {
       var f = ui.form([
-        { id: 'n', type: 'number', label: 'Numerosita del campione', value: Math.min(50, ds.nrows), min: 1 },
+        { id: 'n', type: 'number', label: 'Numerosità del campione', value: Math.min(50, ds.nrows), min: 1 },
         { id: 'seed', type: 'number', label: 'Seme casuale', value: 1 }
       ]);
       grid.appendChild(ui.panel('Campionamento e pulizia', null, [

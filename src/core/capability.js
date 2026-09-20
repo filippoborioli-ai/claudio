@@ -1,7 +1,7 @@
 /* CLAUDIO v3 - core/capability.js
- * Analisi di capacita: Cp/Cpk (within) e Pp/Ppk (overall), Cpm, Z.bench,
- * PPM osservati/attesi, livello sigma, capacita non normale (distribuzione fittata
- * o trasformazione), capacita per attributi (binomiale e Poisson),
+ * Analisi di capacità: Cp/Cpk (within) e Pp/Ppk (overall), Cpm, Z.bench,
+ * PPM osservati/attesi, livello sigma, capacità non normale (distribuzione fittata
+ * o trasformazione), capacità per attributi (binomiale e Poisson),
  * intervalli di confidenza degli indici.
  */
 ;(function (root, name, deps, factory) {
@@ -29,7 +29,7 @@ function (num, dist, st, ctrl) {
   }
 
   /**
-   * Capacita normale.
+   * Capacità normale.
    * spec: { values, lsl, usl, target, subgroupSize|by, sigmaMethod, conf, boxcox, sigmaWithin }
    */
   function normalCapability(spec) {
@@ -125,7 +125,7 @@ function (num, dist, st, ctrl) {
   }
 
   /**
-   * Capacita non normale.
+   * Capacità non normale.
    * method: 'dist' (fit distribuzione) | 'boxcox' | 'johnson'
    * distKey: chiave di dist.continuous (weibull, lognormal, gamma, exponential, logistic, sev)
    */
@@ -236,7 +236,7 @@ function (num, dist, st, ctrl) {
   }
 
   /**
-   * Capacita per attributi - binomiale (% difettosi).
+   * Capacità per attributi - binomiale (% difettosi).
    * spec: { defectives: [], sizes: [], target }
    */
   function binomialCapability(spec) {
@@ -271,7 +271,7 @@ function (num, dist, st, ctrl) {
   }
 
   /**
-   * Capacita per attributi - Poisson (difetti per unita).
+   * Capacità per attributi - Poisson (difetti per unità).
    * spec: { defects: [], sizes: [] }
    */
   function poissonCapability(spec) {
@@ -299,7 +299,7 @@ function (num, dist, st, ctrl) {
 
   /**
    * Confronto within/overall in stile "Process Capability Sixpack":
-   * restituisce i pezzi pronti per la vista (carte + capacita + normalita).
+   * restituisce i pezzi pronti per la vista (carte + capacità + normalità).
    */
   function sixpack(spec) {
     var sub = spec.subgroupSize || 1;
@@ -317,15 +317,15 @@ function (num, dist, st, ctrl) {
     };
   }
 
-  /** Valutazione qualitativa dell'indice. */
+  /** Valutazione qualitativa dell’indice. */
   function verdict(cpk) {
     if (!isFinite(cpk)) return { level: 'n/d', text: 'indice non calcolabile' };
     if (cpk < 0.67) return { level: 'critico', text: 'processo non capace: intervento immediato' };
     if (cpk < 1.0) return { level: 'scarso', text: 'processo non capace: molti scarti attesi' };
-    if (cpk < 1.33) return { level: 'marginale', text: 'capacita marginale: serve controllo strettissimo' };
-    if (cpk < 1.67) return { level: 'adeguato', text: 'capacita adeguata (riferimento industriale 1,33)' };
-    if (cpk < 2.0) return { level: 'buono', text: 'capacita buona (verso il livello 5 sigma)' };
-    return { level: 'eccellente', text: 'capacita eccellente (livello 6 sigma)' };
+    if (cpk < 1.33) return { level: 'marginale', text: 'capacità marginale: serve controllo strettissimo' };
+    if (cpk < 1.67) return { level: 'adeguato', text: 'capacità adeguata (riferimento industriale 1,33)' };
+    if (cpk < 2.0) return { level: 'buono', text: 'capacità buona (verso il livello 5 sigma)' };
+    return { level: 'eccellente', text: 'capacità eccellente (livello 6 sigma)' };
   }
 
   return {

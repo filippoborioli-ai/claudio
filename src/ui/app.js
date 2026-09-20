@@ -1,5 +1,5 @@
 /* CLAUDIO v3 - ui/app.js
- * Guscio dell applicazione: stato, navigazione, gestione dei dataset,
+ * Guscio dell’applicazione: stato, navigazione, gestione dei dataset,
  * importazione/esportazione, tema, salvataggio locale del progetto.
  */
 ;(function (root) {
@@ -55,6 +55,38 @@
   }
 
   function ds() { return state.datasets[state.active] || null; }
+
+  /** Nomi che quasi sempre indicano un indice, non una misura. */
+  var INDEX_NAMES = /^(id|idx|indice|index|riga|row|n|num|numero|ordine|order|stdorder|runorder|pttype|blocco|block|sottogruppo|subgroup|campione|sample|prova|trial|replica|rep|anno|year|mese|month|giorno|day|ora|hour|periodo|tempo progressivo)$/i;
+
+  /**
+   * Sceglie la colonna numerica che ha più senso come misura:
+   * scarta indici, contatori e successioni 1..n, preferisce la variabilità reale.
+   */
+  function guessMeasure(dataset, exclude) {
+    if (!dataset) return null;
+    exclude = exclude || [];
+    var candidates = dataset.numericColumns().filter(function (c) {
+      return exclude.indexOf(c) < 0 && c.indexOf('(reale)') < 0;
+    });
+    if (!candidates.length) return null;
+    var scored = candidates.map(function (c) {
+      var v = C3.stats.clean(dataset.numeric(c));
+      var distinct = {};
+      v.forEach(function (x) { distinct[x] = 1; });
+      var nDistinct = Object.keys(distinct).length;
+      var isSequence = v.length > 3 && v.every(function (x, i) { return x === v[0] + i; });
+      var integerOnly = v.every(function (x) { return x === Math.round(x); });
+      var score = nDistinct / Math.max(1, v.length);
+      if (INDEX_NAMES.test(c.trim())) score -= 2;
+      if (isSequence) score -= 3;
+      if (integerOnly && nDistinct <= Math.max(3, v.length / 8)) score -= 0.4;
+      if (!integerOnly) score += 0.5;
+      return { name: c, score: score };
+    });
+    scored.sort(function (a, b) { return b.score - a.score; });
+    return scored[0].name;
+  }
 
   function addDataset(d, activate) {
     state.datasets.push(d);
@@ -418,6 +450,7 @@
   C3.app = {
     state: state, ds: ds, addDataset: addDataset, removeDataset: removeDataset,
     registerView: registerView, navigate: navigate, render: render, refresh: render,
+    guessMeasure: guessMeasure,
     renderTopbar: renderTopbar, toast: toast, save: save, boot: boot,
     settings: state.settings,
     openImport: openImport, openSamples: openSamples, openExport: openExport

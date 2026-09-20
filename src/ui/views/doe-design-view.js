@@ -90,7 +90,7 @@
         },
         { id: 'degree', type: 'number', label: 'Grado del reticolo', value: 2, min: 1, max: 4, when: function (v) { return v.type === 'mixture' && v.mixType === 'lattice'; } },
         { id: 'axial', type: 'checkbox', label: 'Aggiungi punti assiali', value: true, when: function (v) { return v.type === 'mixture' && v.mixType === 'lattice'; } },
-        { id: 'mixTotal', type: 'number', label: 'Quantita totale della miscela', value: 1, when: function (v) { return v.type === 'mixture'; } },
+        { id: 'mixTotal', type: 'number', label: 'Quantità totale della miscela', value: 1, when: function (v) { return v.type === 'mixture'; } },
         { id: 'doptRuns', type: 'number', label: 'Numero di prove disponibili', value: 12, min: 4, max: 60, when: function (v) { return v.type === 'dopt'; } },
         {
           id: 'doptModel', type: 'select', label: 'Modello da stimare', options: [
@@ -99,7 +99,7 @@
             { value: 'quadratic', label: 'Quadratico completo' }
           ], when: function (v) { return v.type === 'dopt'; }
         },
-        { id: 'randomize', type: 'checkbox', label: 'Randomizza l ordine delle prove', value: true },
+        { id: 'randomize', type: 'checkbox', label: 'Randomizza l’ordine delle prove', value: true },
         { id: 'seed', type: 'number', label: 'Seme della randomizzazione', value: 1234 },
         { id: 'sigma', type: 'number', label: 'Deviazione standard attesa (per la potenza)', value: 1 },
         { id: 'effect', type: 'number', label: 'Effetto da rilevare', value: 2 }
@@ -168,7 +168,7 @@
           } else {
             var lo2 = h('input', { type: 'number', step: 'any', value: fac.low, style: { width: '72px' }, title: 'livello basso' });
             var hi2 = h('input', { type: 'number', step: 'any', value: fac.high, style: { width: '72px' }, title: 'livello alto' });
-            var un = h('input', { type: 'text', value: fac.unit, style: { width: '58px' }, placeholder: 'unita' });
+            var un = h('input', { type: 'text', value: fac.unit, style: { width: '58px' }, placeholder: 'unità' });
             lo2.addEventListener('change', function () { fac.low = Number(lo2.value); run(); });
             hi2.addEventListener('change', function () { fac.high = Number(hi2.value); run(); });
             un.addEventListener('change', function () { fac.unit = un.value; run(); });
@@ -179,7 +179,7 @@
         factorHost.appendChild(h('div', { class: 'small muted', text: isCategorical
           ? 'Per ogni fattore: nome e livelli separati da virgola.'
           : (isMixture ? 'Per ogni componente: nome, proporzione minima e massima.'
-            : 'Per ogni fattore: nome, livello basso, livello alto, unita di misura.') }));
+            : 'Per ogni fattore: nome, livello basso, livello alto, unità di misura.') }));
       }
 
       var out = h('div');
@@ -385,7 +385,7 @@
               ? 'Risoluzione ' + d.roman + ': effetti principali e interazioni a due fattori sono stimabili separatamente.'
               : (d.resolution === 4
                 ? 'Risoluzione IV: gli effetti principali sono liberi dalle interazioni a due fattori, ma le interazioni a due fattori sono confuse fra loro. Per separarle serve un fold-over o prove aggiuntive.'
-                : 'Risoluzione III: ogni effetto principale e confuso con almeno un interazione a due fattori. Va bene per lo screening iniziale, non per le conclusioni finali.'),
+                : 'Risoluzione III: ogni effetto principale e confuso con almeno un’interazione a due fattori. Va bene per lo screening iniziale, non per le conclusioni finali.'),
               d.resolution >= 5 ? 'good' : (d.resolution === 4 ? 'warn' : 'bad')),
             h('button', {
               class: 'sm', onclick: function () {
@@ -400,7 +400,7 @@
         // visualizzazione dello spazio sperimentale
         if (d.factors && d.factors.length >= 2 && ['factorial', 'ccd', 'bbd', 'dsd', 'pb', 'dopt'].indexOf(v.type) >= 0) {
           var vis = h('div', { class: 'c3-grid-2' });
-          out.appendChild(ui.panel('Spazio sperimentale', { sub: 'punti del disegno in unita codificate' }, vis));
+          out.appendChild(ui.panel('Spazio sperimentale', { sub: 'punti del disegno in unità codificate' }, vis));
           var f1 = d.factors[0].name, f2 = d.factors[1].name;
           var box = h('div');
           vis.appendChild(box);
@@ -483,7 +483,7 @@
     label: 'Catalogo dei disegni',
     icon: '☷',
     group: 'DoE',
-    desc: 'Tutti i disegni fattoriali a due livelli disponibili con numero di prove, risoluzione e generatori, piu gli array di Taguchi verificati.',
+    desc: 'Tutti i disegni fattoriali a due livelli disponibili con numero di prove, risoluzione e generatori, più gli array di Taguchi verificati.',
     render: function (el) {
       var cat = doe.catalogFractional(11);
       el.appendChild(ui.panel('Disegni fattoriali a 2 livelli', {
@@ -508,7 +508,7 @@
           'V o superiore: si stimano separatamente effetti principali e interazioni a 2 fattori.', 'good')
       ]));
       var tag = doe.taguchiCatalog();
-      el.appendChild(ui.panel('Array ortogonali di Taguchi', { sub: 'ortogonalita verificata a runtime su tutte le coppie di colonne' },
+      el.appendChild(ui.panel('Array ortogonali di Taguchi', { sub: 'ortogonalità verificata a runtime su tutte le coppie di colonne' },
         ui.table([
           { key: 'name', label: 'Array' },
           { key: 'runs', label: 'Prove', digits: 0 },
@@ -526,7 +526,7 @@
           ['Central Composite Design', 'Fattoriale + punti assiali + centrali: stima il modello quadratico completo. Alpha rotatabile o face-centered.'],
           ['Box-Behnken', 'Tre livelli senza combinazioni estreme: utile quando i vertici del cubo sono impraticabili.'],
           ['Quadrato latino / greco-latino', 'Controlla due o tre fonti di disturbo con k^2 prove, assumendo nessuna interazione.'],
-          ['Blocchi randomizzati e incompleti', 'Isolano una fonte di variabilita nota (giorno, lotto, forno).'],
+          ['Blocchi randomizzati e incompleti', 'Isolano una fonte di variabilità nota (giorno, lotto, forno).'],
           ['Split-plot', 'Fattori difficili da variare nei whole plot: meno cambi di setup, ma due errori diversi da usare nei test.'],
           ['Miscele', 'I fattori sono proporzioni che sommano a 1: modelli di Scheffe e diagrammi ternari.'],
           ['D-optimal', 'Disegno costruito al computer quando lo spazio e vincolato o le prove sono imposte.']

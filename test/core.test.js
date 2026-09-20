@@ -319,6 +319,32 @@ test('superficie di risposta: punto stazionario', () => {
   assert.strictEqual(rsm.stationary.nature, 'massimo');
 });
 
+test('RSM: la codifica si ancora ai punti fattoriali (CCD in unita reali)', () => {
+  // dati generati da un modello noto in unita codificate del piano (fattoriali a +-1)
+  const design = doe.ccd({
+    factors: [{ name: 'A', low: 80, high: 90 }, { name: 'B', low: 170, high: 180 }],
+    alphaType: 'rotatable', randomize: false, centerCube: 5, centerAxial: 0
+  });
+  const A = [], B = [], y = [];
+  design.table.forEach(row => {
+    const x1 = row.A, x2 = row.B;
+    A.push(row['A (reale)']);
+    B.push(row['B (reale)']);
+    y.push(80 + 1.0 * x1 + 0.5 * x2 - 1.4 * x1 * x1 - 1.0 * x2 * x2 + 0.25 * x1 * x2);
+  });
+  const rsm = doe.analyzeRSM({ data: { A, B, y }, response: 'y', factors: ['A', 'B'] });
+  // i punti fattoriali distano 5 dal centro: quella deve essere l unita di codifica
+  close(rsm.ranges.A.half, 5, 1e-9, 'semiampiezza di codifica');
+  const coef = Object.fromEntries(rsm.fit.names.map((n, i) => [n, rsm.fit.beta[i]]));
+  close(coef.A, 1.0, 1e-4, 'coefficiente lineare in unita del piano');
+  close(coef['A^2'], -1.4, 1e-4, 'coefficiente quadratico');
+  close(coef['A*B'], 0.25, 1e-4, 'coefficiente di interazione');
+  // punto stazionario: confronto con la soluzione analitica
+  const exact = mat.solveSPD([[2 * 1.4, -0.25], [-0.25, 2 * 1.0]], [1.0, 0.5]);
+  close(rsm.stationary.coded[0], exact[0], 1e-4, 'stazionario codificato');
+  close(rsm.stationary.real[0], 85 + exact[0] * 5, 1e-3, 'stazionario in unita reali');
+});
+
 test('DSD ortogonale negli effetti principali', () => {
   [4, 6, 8, 12].forEach(m => {
     const d = designs.dsd({

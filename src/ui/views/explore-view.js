@@ -1,7 +1,7 @@
 /* CLAUDIO v3 - ui/views/explore-view.js
  * Costruttore di grafici interattivo in stile business intelligence:
  * si scelgono asse, misura, aggregazione, serie e filtri; il grafico si
- * aggiorna subito e puo essere salvato come riquadro del cruscotto.
+ * aggiorna subito e può essere salvato come riquadro del cruscotto.
  */
 ;(function (root) {
   'use strict';
@@ -71,7 +71,7 @@
       {
         id: 'y', type: 'select', label: 'Misura (Y)',
         options: [{ value: '', label: '(conteggio righe)' }].concat(numCols),
-        value: numCols[0] || ''
+        value: C3.app.guessMeasure(ds) || numCols[0] || ''
       },
       {
         id: 'agg', type: 'select', label: 'Aggregazione', options: AGGS, value: 'mean',
@@ -354,7 +354,7 @@
     }
 
     if (type === 'heat') {
-      if (!spec.x) throw new Error('La mappa di calore richiede una colonna sull asse X.');
+      if (!spec.x) throw new Error('La mappa di calore richiede una colonna sull’asse X.');
       if (!spec.series) {
         // sceglie automaticamente una seconda dimensione categorica diversa dalla prima
         var alt = ds.categoricalColumns().filter(function (c) { return c !== spec.x; })[0];
@@ -409,7 +409,7 @@
     // bar / barh / line / area
     var byCols2 = [spec.x].filter(Boolean);
     if (spec.series) byCols2.push(spec.series);
-    if (!byCols2.length) throw new Error('Scegli una colonna per l asse X.');
+    if (!byCols2.length) throw new Error('Scegli una colonna per l’asse X.');
     var aggr = aggregateBy(ds, idx, byCols2, spec.y, spec.agg);
     var xLevels = uniqueKeys(aggr.rows, 0);
     var sLevels = spec.series ? uniqueKeys(aggr.rows, 1) : [null];
