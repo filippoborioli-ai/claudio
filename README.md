@@ -77,7 +77,7 @@ Il motore statistico è scritto da zero, senza librerie esterne, e verificato da
 node --test test/core.test.js test/ui.test.js
 ```
 
-40 test che confrontano i risultati con **tabelle pubblicate e valori di riferimento**:
+43 test che confrontano i risultati con **tabelle pubblicate e valori di riferimento**:
 
 | Area | Riferimento |
 |---|---|
@@ -89,7 +89,11 @@ node --test test/core.test.js test/ui.test.js
 | Kruskal-Wallis | esempio di Hollander & Wolfe (H=0,7714, p=0,68) |
 | Disegni | ortogonalità X'X verificata, risoluzioni a minima aberrazione, conteggi CCD/Box-Behnken |
 | Gage R&R | componenti recuperate da dati con varianze note |
+| RSM | codifica ancorata ai punti fattoriali: coefficienti e punto stazionario verificati contro un modello noto |
 | Interfaccia | tutte le viste e tutte le opzioni percorse in un DOM simulato |
+
+In più `node tools/visual-qa.mjs` apre le 21 viste in Chromium e verifica assenza di errori di
+console, grafici degeneri e straripamenti di layout (richiede `playwright`, opzionale).
 
 ---
 

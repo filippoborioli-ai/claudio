@@ -5,10 +5,16 @@ Software di analisi dati (statistica, SPC, capacità, MSA, DoE, Lean Six Sigma) 
 ## Comandi
 
 ```bash
-node --test test/core.test.js test/ui.test.js   # 40 test: motore statistico + interfaccia in jsdom
-python -m http.server 8777                      # server locale (oppure avvia.cmd)
+node --test test/core.test.js test/ui.test.js   # 43 test: motore statistico + interfaccia in jsdom
+python -m http.server 8765                      # server locale (oppure avvia.cmd)
+node tools/visual-qa.mjs                        # controllo in Chromium reale (richiede playwright)
+node tools/visual-qa.mjs --shots                # come sopra, salvando le schermate
 node --check src/core/doe.js                    # controllo sintattico rapido
 ```
+
+`tools/visual-qa.mjs` apre tutte le viste in un browser vero e segnala errori di console, SVG
+degeneri e straripamenti di layout: è il controllo che ha trovato i problemi che jsdom non vede
+(path SVG vuoti, colonne grid senza `min-width: 0`).
 
 `jsdom` è l'unica dipendenza di sviluppo (serve solo ai test dell'interfaccia; se manca, quei test si saltano da soli).
 
@@ -70,7 +76,10 @@ Schema ricorrente: `split` con pannello opzioni a sinistra (`ui.form`) e risulta
 - **Metodo di Lenth** quando non ci sono gradi di libertà per l'errore; `analyzeFactorial` riduce da sola l'ordine se i termini superano le prove.
 - **Percentili**: interpolazione (n+1)p come nei software di qualità; `median` usa il tipo 7.
 - **Formule delle colonne**: `evalFormula` compila con `new Function` ma **rifiuta ogni identificatore non in allowlist** — non allentare questo controllo.
-- Le stringhe dell'interfaccia sono in italiano, senza accenti nei sorgenti JS (i file sono UTF-8 ma gli accenti sono stati evitati per robustezza); nei file Markdown gli accenti si usano normalmente.
+- Le stringhe dell'interfaccia sono in italiano **con accenti** (i file sono UTF-8) e usano
+  l'apostrofo tipografico `’` nelle elisioni: quello ASCII chiuderebbe le stringhe JS.
+- **Gli identificatori restano ASCII**: id delle viste (`id: 'capacita'`), id dei dataset di
+  esempio e chiavi di navigazione finiscono nell'URL e nei test.
 
 ## Trappole incontrate
 
@@ -78,6 +87,9 @@ Schema ricorrente: `split` con pannello opzioni a sinistra (`ui.form`) e risulta
 - `qrSolve` deve reggere p > n (disegni saturi): il ciclo di Householder si ferma a `min(n, p)`.
 - In jsdom mancano `matchMedia`, `getContext`, `URL.createObjectURL`: il test li fornisce.
 - `node --test test/` non risolve la cartella su Windows: passare i file espliciti.
+- Una sostituzione automatica degli accenti va fatta solo sulle stringhe visibili: id di vista e
+  di dataset accentati rompono navigazione e test (già successo una volta).
+- `qrSolve` deve reggere p > n; `analyzeRSM` codifica sui punti fattoriali, non su min/max.
 
 ## Test
 
