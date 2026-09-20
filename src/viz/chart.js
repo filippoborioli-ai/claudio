@@ -664,6 +664,9 @@
       var horiz = series.orientation === 'h';
       var bw = (xs.type === 'band' ? xs.bandwidth : (series.barWidth || 12));
       var groupCount = series.groupCount || 1, groupIndex = series.groupIndex || 0;
+      // con poche categorie la banda e larghissima: si limita la barra e la si centra
+      var maxBar = series.maxBarWidth == null ? 72 : series.maxBarWidth;
+      if (bw > maxBar * groupCount) bw = maxBar * groupCount;
       var w = bw / groupCount;
       (series.points || []).forEach(function (pt) {
         if (pt.y == null || !isFinite(pt.y)) return;

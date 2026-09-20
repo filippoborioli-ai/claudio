@@ -89,7 +89,8 @@ Schema ricorrente: `split` con pannello opzioni a sinistra (`ui.form`) e risulta
 - `node --test test/` non risolve la cartella su Windows: passare i file espliciti.
 - Una sostituzione automatica degli accenti va fatta solo sulle stringhe visibili: id di vista e
   di dataset accentati rompono navigazione e test (già successo una volta).
-- `qrSolve` deve reggere p > n; `analyzeRSM` codifica sui punti fattoriali, non su min/max.
+- `analyzeRSM` codifica sui punti fattoriali, non su min/max: altrimenti nei CCD i coefficienti
+  non coincidono con quelli del piano.
 
 ## Test
 
